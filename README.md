@@ -1,4 +1,4 @@
-# rpi_humidifier_monitor
+# rpi_exposure_controller
 
 pigpio installed via:
 
