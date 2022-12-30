@@ -41,3 +41,9 @@
 {"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T17:33:16.363Z"}
 {"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T17:33:42.014Z"}
 {"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T17:35:41.854Z"}
+{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T22:57:42.207Z"}
+{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T22:59:06.717Z"}
+{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T23:00:54.897Z"}
+{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T23:04:32.818Z"}
+{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T23:05:39.060Z"}
+{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T23:07:56.684Z"}

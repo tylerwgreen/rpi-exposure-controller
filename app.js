@@ -14,19 +14,18 @@ var app = {
 		app._logger = require('logger');
 		app._logger.init(app.config.get('logger'));
 		app.logger = app._logger.getLogger('app', 'error'); // set log level for the app
-app.peripherals.init()
-		// app.cache.init()
-		// .then(result => {
-			// app.logger.info('cache initialized');
-		// })
-		// .then(app.peripherals.init)
+		app.cache.init()
+		.then(result => {
+			app.logger.info('cache initialized');
+		})
+		.then(app.peripherals.init)
 		.then(result => {
 			app.logger.info('peripherals initialized');
 		})
-		// .then(app.tasks.init)
-		// .then(result => {
-			// app.logger.info('tasks initialized');
-		// })
+		.then(app.tasks.init)
+		.then(result => {
+			app.logger.info('tasks initialized');
+		})
 		.then(result => {
 			app.logger.info('application initialized');
 		})
@@ -81,7 +80,7 @@ app.peripherals.init()
 					.then(app.peripherals.lcdScreen.update.top('Exposure'))
 					.then(app.peripherals.lcdScreen.update.bottom(app.cache.exposure.get()))
 					.then(result => {
-						app.tasks.settings.enable();
+						// app.tasks.settings.enable();
 						resolve();
 					});
 				});
@@ -171,13 +170,12 @@ app.logger.verbose('light: ' + app.peripherals.photoResistor.exposure.get().ligh
 	peripherals: {
 		init: function(){
 			return new Promise((resolve, reject) => {
-app.peripherals.lcdScreen.init()
-				// app.peripherals.buttons.init()
-				// .then(app.peripherals.leds.init)
-				// .then(app.peripherals.buzzer.init)
-				// .then(app.peripherals.relays.init)
-				// .then(app.peripherals.photoResistor.init)
-				// .then(app.peripherals.lcdScreen.init)
+				app.peripherals.buttons.init().then(result => {app.logger.info('buttons initialized');})
+				.then(app.peripherals.leds.init).then(result => {app.logger.info('leds initialized');})
+				.then(app.peripherals.buzzer.init).then(result => {app.logger.info('buzzer initialized');})
+				.then(app.peripherals.relays.init).then(result => {app.logger.info('relays initialized');})
+				.then(app.peripherals.photoResistor.init).then(result => {app.logger.info('photoResistor initialized');})
+				.then(app.peripherals.lcdScreen.init).then(result => {app.logger.info('lcdScreen initialized');})
 				.then(result => {
 					resolve();
 				})
@@ -313,48 +311,6 @@ app.peripherals.lcdScreen.init()
 					});
 				});
 			},
-			/* reset: function(){
-				return new Promise((resolve, reject) => {
-					app.peripherals.lcdScreen.lcdScreen.lines.reset().then(result => {
-						resolve();
-					});
-				});
-			},
-			update: {
-				top: function(text){
-					return new Promise((resolve, reject) => {
-						app.peripherals.lcdScreen.lcdScreen.lines.top.update(app.peripherals.lcdScreen._trimText(text))
-						.then(result => {
-							resolve();
-						});
-					});
-				},
-				bottom: function(text){
-					return new Promise((resolve, reject) => {
-						app.peripherals.lcdScreen.lcdScreen.lines.bottom.update(app.peripherals.lcdScreen._trimText(text))
-						.then(result => {
-							resolve();
-						});
-					});
-				},
-			},
-			_trimText: function(text){
-				text = '' + text;
-				text = text + '                ';
-				text = text.slice(0, 16);
-				return text;
-			}, */
-		},
-		/* lcdScreen: {
-			lcdScreen: null,
-			init: function(){
-				return new Promise((resolve, reject) => {
-					app.peripherals.lcdScreen.lcdScreen = require('gpioLcdScreen');
-					app.peripherals.lcdScreen.lcdScreen.init(app._logger, app.config.get('peripherals.lcdScreen.config')).then(result => {
-						resolve('gpioLcdScreen initialized');
-					});
-				});
-			},
 			reset: function(){
 				return new Promise((resolve, reject) => {
 					app.peripherals.lcdScreen.lcdScreen.lines.reset().then(result => {
@@ -365,7 +321,7 @@ app.peripherals.lcdScreen.init()
 			update: {
 				top: function(text){
 					return new Promise((resolve, reject) => {
-						app.peripherals.lcdScreen.lcdScreen.lines.top.update(app.peripherals.lcdScreen._trimText(text))
+						app.peripherals.lcdScreen.lcdScreen.lines.top.update(text)
 						.then(result => {
 							resolve();
 						});
@@ -373,20 +329,14 @@ app.peripherals.lcdScreen.init()
 				},
 				bottom: function(text){
 					return new Promise((resolve, reject) => {
-						app.peripherals.lcdScreen.lcdScreen.lines.bottom.update(app.peripherals.lcdScreen._trimText(text))
+						app.peripherals.lcdScreen.lcdScreen.lines.bottom.update(text)
 						.then(result => {
 							resolve();
 						});
 					});
 				},
 			},
-			_trimText: function(text){
-				text = '' + text;
-				text = text + '                ';
-				text = text.slice(0, 16);
-				return text;
-			},
-		}, */
+		},
 	},
 	date: {
 		getDate: function(){
