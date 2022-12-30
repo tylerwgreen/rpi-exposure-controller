@@ -1,11 +1,3 @@
-# errorResetTimeout: 60000 # milliseconds
-# readingInterval: 60000 # milliseconds
-errorResetTimeout: 10000 # milliseconds
-readingInterval: 10000 # milliseconds
-# errorResetTimeout: 1000 # milliseconds
-# readingInterval: 1000 # milliseconds
-# console:
-    # logLevel: info
 logger:
     # error: 0
     # warn: 1
@@ -19,24 +11,52 @@ logger:
     fileLogging: true
     fileLoggingLevel: error
     consoleLogging: true
-    consoleLoggingLevel: info
-    # consoleLoggingLevel: silly
-dhtSensor:
-    fakeReading: false
-    sensorType: 22
-    gpioPin: 17
-    minHumidityLevel: 50
-htu21dSensor:
-    fakeReading: false
-    bus: /dev/i2c-1
-    address: 0x40
-    minHumidityLevel: 50
-humidifier:
-    gpioPin: 21
-dataSheet:
-    credentials: /app/config/private/Humidifier Monitor-6bf015eab256.json
-    spreadsheetID: 15Vc-gM_5fFdH7BFhbRnWXpgnGISO3igOSy89BsGaDyk
-    sheetID: od6
-    #maxRows: 43201 # +1 to account for header row
-    maxRows: 10081 # +1 to account for header row
-    #maxRows: 61 # +1 to account for header row
+    #consoleLoggingLevel: info
+    consoleLoggingLevel: silly
+cache:
+    id: cache.json
+tasks:
+    settings:
+        exposure:
+            increments: 1 #second
+            max: 30 #seconds
+            min: 0 #seconds
+peripherals:
+    buttons:
+        config:
+            debounceMs: 500 #milliseconds
+        buttons:
+            exposureUp:
+                gpioPin: 12
+            exposureDown:
+                gpioPin: 6
+            exposureStart:
+                gpioPin: 4
+            exposureStop:
+                gpioPin: 18
+    leds:
+        config:
+        leds:
+            exposureOn:
+                gpioPin: 17
+            exposureOff:
+                gpioPin: 27
+            peripheralFeedback:
+                gpioPin: 16
+    buzzer:
+        config:
+            gpioPin: 5
+    relays:
+        config:
+        relays:
+            expose:
+                gpioPin: 21
+            idle:
+                gpioPin: 20
+    lcdScreen:
+        config:
+            i2cAddress: 0x27
+    photoResistor:
+        config:
+            gpioPin: 26
+            readIntervalMs: 100 #milliseconds

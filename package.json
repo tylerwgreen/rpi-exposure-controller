@@ -1,24 +1,27 @@
 {
-	"name": "rpi-humidifier-monitor",
-	"niceName": "RPI Humidifier Monitor",
+	"name": "rpi-exposure-controller",
+	"niceName": "RPI Exporsure Controller",
 	"license": "UNLICENSED",
 	"version": "1.0.0",
 	"private": true,
-	"description": "RPI Humidifier Monitor",
+	"description": "RPI Exporsure Controller",
 	"author": {
 		"name": "Tyler Green",
 		"email": "freshgreenmedia@gmail",
 		"url": "http://freshgreenmedia.com/"
 	},
 	"dependencies": {
-		"config": "~2.0.1",
-		"js-yaml": "~3.12.0",
-		"winston": "~3.1.0",
-		"node-dht-sensor": "~0.0.34",
-		"google-spreadsheet": "~2.0.6",
-		"node-datetime": "~2.1.2",
-		"pigpio": "~1.1.4",
-		"moment": "~2.22.2",
-		"@agilatech/htu21d": "~0.10.1"
+		"config": "~3.3.8",
+		"js-yaml": "~4.1.0",
+		"winston": "~3.8.2",
+		"pigpio": "~3.3.1",
+		"johnny-five": "~2.1.0",
+		"raspi-io": "~11.0.0",
+		"flat-cache": "~3.0.4"
+	},
+	"dependencies_not_used": {
+		"@oawu/lcd1602": "~1.0.3",
+		"lcd": "~3.1.1",
+		"i2c-bus": "~5.2.2"
 	}
 }

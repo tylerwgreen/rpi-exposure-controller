@@ -1,5 +1,47 @@
-# rpi_exposure_controller
+#rpi_exposure_controller
 
-pigpio installed via:
+##Dependencies
 
+###Operating System
+
+[DietPi](https://dietpi.com/)
+
+####Additional Software
+
+OpenSSH Client: Feature-rich SSH, SFTP and SCP client
+Node.js: JavaScript runtime environment
+Build-Essential: GNU C/C++ compiler, development libraries and headers
+Git: Clone and manage Git repositories locally
+Vim-Tiny: compact release of vim
+DietPi-RAMlog: Makes /var/log a RAM disk, preserves file structure on reboot
+OpenSSH Server: Feature-rich SSH server with SFTP and SCP support
+Python 3: Runtime system, pip package installer and development headers
+
+##pigpio
+
+```shell
+pigpiod -v
+sudo apt-get update
 sudo apt-get install pigpio
+```
+
+##gpio
+
+###TL;DR
+
+This is a 3.3V device.
+Using 5V peripherals requires a [logic level converter](https://www.adafruit.com/product/757).
+
+###Output
+
+Maximum total of all pins 50 mA.
+Default 8 mA max per pin. (Returns to this configuration after reset.)
+Software configurable from 2 mA to 16 mA. Do not source or sink more than what you've configured.
+Don't drive capacitive loads.
+
+###Input
+
+Threshold of 1.8V
+Maximum 0.5 mA
+Use a 6Kohm resistor to ensure that current from a 3.3V source cannot exceed 0.5 mA
+( 3.3V / 6000Ω = .00055A )
