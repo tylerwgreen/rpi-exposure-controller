@@ -14,6 +14,9 @@ var app = {
 		app._logger = require('logger');
 		app._logger.init(app.config.get('logger'));
 		app.logger = app._logger.getLogger('app', 'error'); // set log level for the app
+		// initialize app
+		app.logger.silly('app.init()');
+		app.logger.verbose('initializing application');
 		app.cache.init()
 		.then(result => {
 			app.logger.info('cache initialized');
