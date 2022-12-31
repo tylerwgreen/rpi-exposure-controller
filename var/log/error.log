@@ -47,3 +47,5 @@
 {"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T23:04:32.818Z"}
 {"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T23:05:39.060Z"}
 {"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T23:07:56.684Z"}
+{"label":"app","level":"error","timestamp":"2022-12-30T23:51:42.347Z"}
+{"label":"app","level":"error","timestamp":"2022-12-30T23:53:38.376Z"}

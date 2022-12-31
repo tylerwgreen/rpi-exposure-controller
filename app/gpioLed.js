@@ -3,12 +3,16 @@ const Gpio = require('pigpio').Gpio;
 var gpioLed = {
 	_logger: null,
 	init: function(logger, config){
-		gpioLed._logger = logger.getLogger('gpioLed', 'silly');
+		gpioLed._logger = logger.getLogger('gpioLed', config.consoleLoggingLevel);
+		gpioLed._logger.silly('gpioLed.init()');
+		gpioLed._logger.verbose('initializing gpioLed');
 		return new Promise((resolve, reject) => {
-			resolve();
+			gpioLed._logger.info('gpioLed initialized');
+			resolve('gpioLed initialized');
 		});
 	},
 	build: function(name, gpioPin){
+		gpioLed._logger.silly('gpioLed.build()');
 		var led = {
 			name: name,
 			_gpioPin: gpioPin,
@@ -17,18 +21,22 @@ var gpioLed = {
 			_flashInterval: null,
 			_led: new Gpio(gpioPin, {mode: Gpio.OUTPUT}),
 			_reset: function(){
+				gpioLed._logger.silly('led._reset()');
 				clearInterval(this._flashInterval);
 				this._flashDutyCycle = 0;
 				this._led.digitalWrite(0);
 			},
 			on: function(){
+				gpioLed._logger.silly('led.on()');
 				this._reset();
 				this._led.digitalWrite(1);
 			},
 			off: function(){
+				gpioLed._logger.silly('led.off()');
 				this._reset();
 			},
 			flash: function(stepMilliseconds = 10){
+				gpioLed._logger.silly('led.flash()');
 				this._reset();
 				this._flashInterval = setInterval(() => {
 					if(this._flashBrighten){
@@ -48,6 +56,7 @@ var gpioLed = {
 				}, stepMilliseconds);
 			},
 			blip: function(durationMilliseconds = 200){
+				gpioLed._logger.silly('led.blip()');
 				this._reset();
 				this._led.digitalWrite(1);
 				setTimeout(() => {

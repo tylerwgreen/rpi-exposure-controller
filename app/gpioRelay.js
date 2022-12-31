@@ -3,12 +3,16 @@ const Gpio = require('pigpio').Gpio;
 var gpioRelay = {
 	_logger: null,
 	init: function(logger, config){
-		gpioRelay._logger = logger.getLogger('gpioRelay', 'silly');
+		gpioRelay._logger = logger.getLogger('gpioRelay', config.consoleLoggingLevel);
+		gpioRelay._logger.silly('gpioRelay.init()');
+		gpioRelay._logger.verbose('initializing gpioRelay');
 		return new Promise((resolve, reject) => {
-			resolve();
+			gpioRelay._logger.info('gpioRelay initialized');
+			resolve('gpioRelay initialized');
 		});
 	},
 	build: function(name, gpioPin){
+		gpioRelay._logger.silly('gpioRelay.build()');
 		var relay = {
 			name: name,
 			_gpioPin: gpioPin,

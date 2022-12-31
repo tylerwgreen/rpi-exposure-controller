@@ -4,13 +4,17 @@ var gpioButton = {
 	_logger: null,
 	_debounceMs: null,
 	init: function(logger, config){
-		gpioButton._logger = logger.getLogger('gpioButton', 'silly');
+		gpioButton._logger = logger.getLogger('gpioButton', config.consoleLoggingLevel);
+		gpioButton._logger.silly('gpioButton.init()');
+		gpioButton._logger.verbose('initializing gpioButton');
 		gpioButton._debounceMs = config.debounceMs;
 		return new Promise((resolve, reject) => {
-			resolve();
+			gpioButton._logger.info('gpioButton initialized');
+			resolve('gpioButton initialized');
 		});
 	},
 	build: function(name, gpioPin, callback, callbackOnPress = true){
+		gpioButton._logger.silly('gpioButton.build()');
 		var button = {
 			name: name,
 			_gpioPin: gpioPin,
