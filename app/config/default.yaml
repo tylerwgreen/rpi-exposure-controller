@@ -24,7 +24,7 @@ tasks:
 peripherals:
     buttons:
         config:
-            consoleLoggingLevel: silly
+            consoleLoggingLevel: debug
             debounceMs: 500 #milliseconds
         buttons:
             exposureUp:
@@ -37,7 +37,7 @@ peripherals:
                 gpioPin: 18
     leds:
         config:
-            consoleLoggingLevel: silly
+            consoleLoggingLevel: debug
         leds:
             exposureOn:
                 gpioPin: 17
@@ -47,11 +47,11 @@ peripherals:
                 gpioPin: 16
     buzzer:
         config:
-            consoleLoggingLevel: silly
+            consoleLoggingLevel: debug
             gpioPin: 5
     relays:
         config:
-            consoleLoggingLevel: silly
+            consoleLoggingLevel: debug
         relays:
             expose:
                 gpioPin: 21
@@ -59,10 +59,11 @@ peripherals:
                 gpioPin: 20
     lcdScreen:
         config:
-            consoleLoggingLevel: silly
+            boardDebug: false
+            consoleLoggingLevel: debug
             # i2cAddress: 0x27
     photoResistor:
         config:
-            consoleLoggingLevel: silly
+            consoleLoggingLevel: debug
             gpioPin: 26
             readIntervalMs: 100 #milliseconds

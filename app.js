@@ -19,7 +19,7 @@ var app = {
 		app.logger.verbose('initializing application');
 		app.cache.init()
 		.then(app.peripherals.init)
-		.then(app.tasks.init)
+		// .then(app.tasks.init)
 		.then(result => {
 			app.logger.info('application initialized');
 		})
@@ -61,6 +61,7 @@ var app = {
 			app.logger.silly('app.tasks.init()');
 			app.logger.verbose('initializing tasks');
 			return new Promise((resolve, reject) => {
+resolve('tasks initialized');
 				app.tasks.settings.init()
 				app.tasks.exposure.init()
 				.then(result => {
@@ -77,27 +78,27 @@ var app = {
 				app.logger.silly('app.tasks.settings.init()');
 				app.logger.verbose('initializing settings');
 				return new Promise((resolve, reject) => {
-					app.tasks.settings.disable();
+					// app.tasks.settings.disable();
 					app.peripherals.leds.leds.exposureOff.on();
 					app.peripherals.lcdScreen.update.top('Welcome!')
 					.then(app.peripherals.lcdScreen.update.bottom(app.date.getDate()))
 					.then(app.peripherals.lcdScreen.update.top('Exposure'))
 					.then(app.peripherals.lcdScreen.update.bottom(app.cache.exposure.get()))
 					.then(result => {
-						// app.tasks.settings.enable();
+// app.tasks.settings.enable();
 						app.logger.info('settings initialized');
 						resolve('settings initialized');
 					});
 				});
 			},
-enable: function(){
+/* enable: function(){
 	app.logger.silly('app.tasks.settings.enable()');
 	app.tasks.settings.enabled = true;
 },
 disable: function(){
 	app.logger.silly('app.tasks.settings.disable()');
 	app.tasks.settings.enabled = false;
-},
+}, */
 			exposure: {
 				up: function(){
 					app.logger.silly('app.tasks.settings.exposure.up()');
@@ -134,19 +135,19 @@ disable: function(){
 				app.logger.silly('app.tasks.exposure.init()');
 				app.logger.verbose('initializing exposure');
 				return new Promise((resolve, reject) => {
-					app.tasks.exposure.disable();
+// app.tasks.exposure.disable();
 					app.logger.info('exposure initialized');
 					resolve('exposure initialized');
 				});
 			},
-enable: function(){
+/* enable: function(){
 	app.logger.silly('app.tasks.exposure.enable()');
 	app.tasks.exposure.enabled = true;
 },
 disable: function(){
 	app.logger.silly('app.tasks.exposure.disable()');
 	app.tasks.exposure.enabled = false;
-},
+}, */
 			start: function(){
 				app.logger.silly('app.tasks.exposure.start()');
 				app.peripherals.leds.leds.exposureOn.flash();
@@ -165,8 +166,8 @@ disable: function(){
 				app.peripherals.relays.relays.expose.off();
 				app.peripherals.relays.relays.idle.on();
 				app.peripherals.lcdScreen.reset().then(result => {
-clearInterval(app.tasks.exposure.lcdInterval);
-app.logger.verbose('light: ' + app.peripherals.photoResistor.exposure.get().light + 's|dark: ' + app.peripherals.photoResistor.exposure.get().dark + 's');
+// clearInterval(app.tasks.exposure.lcdInterval);
+// app.logger.verbose('light: ' + app.peripherals.photoResistor.exposure.get().light + 's|dark: ' + app.peripherals.photoResistor.exposure.get().dark + 's');
 				});
 			},
 			updateLcd: function(){

@@ -49,3 +49,15 @@
 {"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T23:07:56.684Z"}
 {"label":"app","level":"error","timestamp":"2022-12-30T23:51:42.347Z"}
 {"label":"app","level":"error","timestamp":"2022-12-30T23:53:38.376Z"}
+{"label":"gpioButton","level":"verbose","message":"initializing gpioButton","timestamp":"2022-12-31T00:22:10.144Z"}
+{"label":"gpioLed","level":"verbose","message":"initializing gpioLed","timestamp":"2022-12-31T00:22:10.376Z"}
+{"label":"gpioBuzzer","level":"verbose","message":"initializing gpioBuzzer","timestamp":"2022-12-31T00:22:10.438Z"}
+{"label":"gpioRelay","level":"verbose","message":"initializing gpioRelay","timestamp":"2022-12-31T00:22:10.489Z"}
+{"label":"gpioPhotoResistor","level":"verbose","message":"initializing gpioPhotoResistor","timestamp":"2022-12-31T00:22:10.550Z"}
+{"label":"gpioLcdScreen","level":"verbose","message":"initializing gpioLcdScreen","timestamp":"2022-12-31T00:22:13.125Z"}
+{"label":"gpioButton","level":"info","message":"gpioButton initialized","timestamp":"2022-12-31T00:22:10.171Z"}
+{"label":"gpioLed","level":"info","message":"gpioLed initialized","timestamp":"2022-12-31T00:22:10.388Z"}
+{"label":"gpioBuzzer","level":"info","message":"gpioBuzzer initialized","timestamp":"2022-12-31T00:22:10.448Z"}
+{"label":"gpioRelay","level":"info","message":"gpioRelay initialized","timestamp":"2022-12-31T00:22:10.499Z"}
+{"label":"gpioPhotoResistor","level":"info","message":"gpioPhotoResistor initialized","timestamp":"2022-12-31T00:22:10.578Z"}
+{"label":"gpioLcdScreen","level":"info","message":"gpioLcdScreen initialized","timestamp":"2022-12-31T00:22:13.814Z"}

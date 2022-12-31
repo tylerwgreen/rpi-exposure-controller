@@ -12,11 +12,26 @@ var gpioLcdScreen = {
 		// gpioLcdScreen._i2cAddress = config.i2cAddress;
 		return new Promise((resolve, reject) => {
 			var board = new Board({
-				io: new Raspi()
+				io: new Raspi(),
+				debug: config.boardDebug,
 			});
 			board.on('ready', function() {
+				// for whatever reason, >> is printed to the console after the board is ready, add a new line to keep the conole log pretty
+				console.log();
+				// ==========
+				// Use the board's `samplingInterval(ms)` to
+				// control the actual MCU sampling rate.
+				//
+				// This will limit sampling of all Analog Input
+				// and I2C sensors to once per second (1000 milliseconds)
+				//
+				// Keep in mind that calling this method
+				// will ALWAYS OVERRIDE any per-sensor
+				// interval/rate/frequency settings.
+				// ==========
+				// board.samplingInterval(1000);
 				gpioLcdScreen._lcd = new LCD({
-					controller: 'LCM1602'
+					controller: 'LCM1602',
 				});
 				gpioLcdScreen._logger.info('gpioLcdScreen initialized');
 				resolve('gpioLcdScreen initialized');
