@@ -61,3 +61,58 @@
 {"label":"gpioRelay","level":"info","message":"gpioRelay initialized","timestamp":"2022-12-31T00:22:10.499Z"}
 {"label":"gpioPhotoResistor","level":"info","message":"gpioPhotoResistor initialized","timestamp":"2022-12-31T00:22:10.578Z"}
 {"label":"gpioLcdScreen","level":"info","message":"gpioLcdScreen initialized","timestamp":"2022-12-31T00:22:13.814Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T18:09:52.524Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T18:52:50.092Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T18:54:42.724Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T18:55:09.642Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:01:51.207Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:02:26.630Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:02:48.066Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:03:06.890Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:04:00.742Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:05:02.803Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:05:20.829Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:05:47.846Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:06:38.382Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:07:22.566Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:07:56.875Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:09:45.973Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:11:22.005Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:12:32.701Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T19:13:08.353Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T23:44:51.542Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T23:45:23.038Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T23:45:53.126Z"}
+{"label":"app","level":"error","timestamp":"2023-01-02T23:58:30.682Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T00:00:05.418Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T00:00:30.026Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T00:01:19.905Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T00:01:47.700Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T17:06:39.714Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T17:07:17.844Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T17:24:46.645Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T17:25:22.319Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T17:47:14.635Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T17:47:44.344Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T17:48:12.538Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T17:53:43.900Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T17:55:01.259Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T19:51:18.746Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T20:39:17.294Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T21:23:57.217Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T21:25:18.612Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T21:26:03.520Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T21:26:38.576Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T21:27:30.717Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T21:28:00.629Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T21:28:27.590Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T21:29:23.455Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T21:30:19.815Z"}
+{"label":"app","level":"error","timestamp":"2023-01-03T21:31:25.267Z"}
+{"label":"app","level":"error","timestamp":"2023-01-04T02:31:18.853Z"}
+{"label":"app","level":"error","timestamp":"2023-01-04T02:34:28.500Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-04T18:06:44.128Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-04T18:28:18.369Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-04T18:45:31.504Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-04T21:58:45.148Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-04T22:04:24.977Z"}

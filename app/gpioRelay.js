@@ -4,7 +4,7 @@ var gpioRelay = {
 	_logger: null,
 	init: function(logger, config){
 		gpioRelay._logger = logger.getLogger('gpioRelay', config.consoleLoggingLevel);
-		gpioRelay._logger.silly('gpioRelay.init()');
+		gpioRelay._logger.debug('gpioRelay.init()');
 		gpioRelay._logger.verbose('initializing gpioRelay');
 		return new Promise((resolve, reject) => {
 			gpioRelay._logger.info('gpioRelay initialized');
@@ -12,7 +12,7 @@ var gpioRelay = {
 		});
 	},
 	build: function(name, gpioPin){
-		gpioRelay._logger.silly('gpioRelay.build()');
+		gpioRelay._logger.debug('gpioRelay.build()');
 		var relay = {
 			name: name,
 			_gpioPin: gpioPin,

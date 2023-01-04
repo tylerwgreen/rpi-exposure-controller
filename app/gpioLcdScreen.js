@@ -1,21 +1,20 @@
 const {Board, LCD} = require('johnny-five');
-var Raspi = require('raspi-io').RaspiIO;
+const RaspiIO = require('raspi-io').RaspiIO;
 
 var gpioLcdScreen = {
 	_logger: null,
-	// _i2cAddress: null,
+	_board: null,
 	_lcd: null,
 	init: function(logger, config){
 		gpioLcdScreen._logger = logger.getLogger('gpioLcdScreen', config.consoleLoggingLevel);
-		gpioLcdScreen._logger.silly('gpioLcdScreen.init()');
+		gpioLcdScreen._logger.debug('gpioLcdScreen.init()');
 		gpioLcdScreen._logger.verbose('initializing gpioLcdScreen');
-		// gpioLcdScreen._i2cAddress = config.i2cAddress;
 		return new Promise((resolve, reject) => {
-			var board = new Board({
-				io: new Raspi(),
+			gpioLcdScreen._board = new Board({
+				io: new RaspiIO(),
 				debug: config.boardDebug,
 			});
-			board.on('ready', function() {
+			gpioLcdScreen._board.on('ready', () => {
 				// for whatever reason, >> is printed to the console after the board is ready, add a new line to keep the conole log pretty
 				console.log();
 				// ==========
@@ -29,9 +28,10 @@ var gpioLcdScreen = {
 				// will ALWAYS OVERRIDE any per-sensor
 				// interval/rate/frequency settings.
 				// ==========
-				// board.samplingInterval(1000);
+				// gpioLcdScreen._board.samplingInterval(1000);
+				gpioLcdScreen._board.i2cConfig();
 				gpioLcdScreen._lcd = new LCD({
-					controller: 'LCM1602',
+					controller: config.lcdType,
 				});
 				gpioLcdScreen._logger.info('gpioLcdScreen initialized');
 				resolve('gpioLcdScreen initialized');
@@ -47,7 +47,7 @@ var gpioLcdScreen = {
 	},
 	lines: {
 		reset: function(){
-			gpioLcdScreen._logger.silly('gpioLcdScreen.lines.reset()');
+			gpioLcdScreen._logger.debug('gpioLcdScreen.lines.reset()');
 			return new Promise((resolve, reject) => {
 				gpioLcdScreen._lcd.clear();
 				resolve();

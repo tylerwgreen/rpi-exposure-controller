@@ -8,7 +8,7 @@ var gpioBuzzer = {
 	_buzzInterval: null,
 	init: function(logger, config){
 		gpioBuzzer._logger = logger.getLogger('gpioBuzzer', config.consoleLoggingLevel);
-		gpioBuzzer._logger.silly('gpioBuzzer.init()');
+		gpioBuzzer._logger.debug('gpioBuzzer.init()');
 		gpioBuzzer._logger.verbose('initializing gpioBuzzer');
 		gpioBuzzer._gpioPin = config.gpioPin;
 		return new Promise((resolve, reject) => {
@@ -19,13 +19,13 @@ var gpioBuzzer = {
 		});
 	},
 	_reset: function(){
-		gpioBuzzer._logger.silly('gpioBuzzer._reset()');
+		gpioBuzzer._logger.debug('gpioBuzzer._reset()');
 		this._isBuzzing = false;
 		clearInterval(this._buzzInterval);
 		this._buzzer.digitalWrite(0);
 	},
 	beep: function(milliseconds = 250){
-		gpioBuzzer._logger.silly('gpioBuzzer.beep()');
+		gpioBuzzer._logger.debug('gpioBuzzer.beep()');
 		this._reset();
 		this._buzzInterval = setInterval(() => {
 			if(this._isBuzzing){
@@ -38,7 +38,7 @@ var gpioBuzzer = {
 		}, milliseconds);
 	},
 	buzz: function(durationMilliseconds = 100){
-		gpioBuzzer._logger.silly('gpioBuzzer.buzz()');
+		gpioBuzzer._logger.debug('gpioBuzzer.buzz()');
 		this._reset();
 		this._buzzer.digitalWrite(1);
 		setTimeout(() => {
@@ -46,7 +46,7 @@ var gpioBuzzer = {
 		}, durationMilliseconds);
 	},
 	off: function(){
-		gpioBuzzer._logger.silly('gpioBuzzer.off()');
+		gpioBuzzer._logger.debug('gpioBuzzer.off()');
 		this._reset();
 	},
 }

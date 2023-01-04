@@ -29,7 +29,7 @@ var gpioPhotoResistor = {
 			gpioPhotoResistor._tick.dark.reset();
 		},
 		update: function(){
-			gpioPhotoResistor._logger.silly('gpioPhotoResistor._tick.update()');
+			// gpioPhotoResistor._logger.silly('gpioPhotoResistor._tick.update()');
 			var level = gpioPhotoResistor._photoResistor.digitalRead();
 				// is light
 				if(level == 0){
@@ -40,7 +40,7 @@ var gpioPhotoResistor = {
 				}
 		},
 		getDurationMs: function(tick){
-			gpioPhotoResistor._logger.silly('gpioPhotoResistor._tick.getDurationMs()');
+			// gpioPhotoResistor._logger.silly('gpioPhotoResistor._tick.getDurationMs()');
 			var durationMs = Date.now() - gpioPhotoResistor._tick.tickPrevious;
 			gpioPhotoResistor._tick.tickPrevious = Date.now();
 			return durationMs;
@@ -52,11 +52,11 @@ var gpioPhotoResistor = {
 				this.durationMs = 0;
 			},
 			update: function(){
-				gpioPhotoResistor._logger.silly('gpioPhotoResistor._tick.light.update()');
+				// gpioPhotoResistor._logger.silly('gpioPhotoResistor._tick.light.update()');
 				this.durationMs += gpioPhotoResistor._tick.getDurationMs();
 			},
 			get: function(){
-				gpioPhotoResistor._logger.silly('gpioPhotoResistor._tick.light.get()');
+				// gpioPhotoResistor._logger.silly('gpioPhotoResistor._tick.light.get()');
 				return this.durationMs;
 			}
 		},
@@ -67,11 +67,11 @@ var gpioPhotoResistor = {
 				this.durationMs = 0;
 			},
 			update: function(){
-				gpioPhotoResistor._logger.silly('gpioPhotoResistor._tick.dark.update()');
+				// gpioPhotoResistor._logger.silly('gpioPhotoResistor._tick.dark.update()');
 				this.durationMs += gpioPhotoResistor._tick.getDurationMs();
 			},
 			get: function(){
-				gpioPhotoResistor._logger.silly('gpioPhotoResistor._tick.dark.get()');
+				// gpioPhotoResistor._logger.silly('gpioPhotoResistor._tick.dark.get()');
 				return this.durationMs;
 			}
 		},

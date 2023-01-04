@@ -19,7 +19,8 @@ Python 3: Runtime system, pip package installer and development headers
 
 ##pigpio
 
-```shell
+```
+shell
 pigpiod -v
 sudo apt-get update
 sudo apt-get install pigpio
@@ -45,3 +46,27 @@ Threshold of 1.8V
 Maximum 0.5 mA
 Use a 6Kohm resistor to ensure that current from a 3.3V source cannot exceed 0.5 mA
 ( 3.3V / 6000Ω = .00055A )
+
+##crontab
+```
+0 1 * * * sudo bash ~/rpi-exposure-controller/shell/cron.sh
+```
+
+##autostart
+```
+/var/lib/dietpi/dietpi-autostart/custom.sh
+```
+```
+~/rpi-exposure-controller/shell/autostart.sh
+exit 0
+```
+
+##DietPi config
+DietPi auto update uses a lot of CPU on boot, this caused poor performance on the Raspberry Pi Zero
+```
+/boot/dietpi.txt
+```
+```
+CONFIG_CHECK_DIETPI_UPDATES=0
+CONFIG_CHECK_APT_UPDATES=0
+```

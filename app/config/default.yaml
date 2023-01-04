@@ -11,17 +11,27 @@ logger:
     fileLogging: true
     fileLoggingLevel: error
     consoleLogging: true
-    #consoleLoggingLevel: info
-    consoleLoggingLevel: silly
+    consoleLoggingLevel: debug
+    # consoleLoggingLevel: silly
 cache:
     id: cache.json
 tasks:
     settings:
+        lcdInterval: 1000 #milliseconds
         exposure:
-            increments: 1 #second
-            max: 30 #seconds
-            min: 0 #seconds
+            increments: 1000 #uv accumulated per min
+            max: 20000
+            min: 1000
+    exposure:
+        lcdInterval: 250 #milliseconds
 peripherals:
+    lcdScreen:
+        config:
+            consoleLoggingLevel: debug
+            lcdType: LCM1602
+    giopReset:
+        config:
+            consoleLoggingLevel: debug
     buttons:
         config:
             consoleLoggingLevel: debug
@@ -57,13 +67,10 @@ peripherals:
                 gpioPin: 21
             idle:
                 gpioPin: 20
-    lcdScreen:
-        config:
-            boardDebug: false
-            consoleLoggingLevel: debug
-            # i2cAddress: 0x27
-    photoResistor:
+    uvSensor:
         config:
             consoleLoggingLevel: debug
-            gpioPin: 26
-            readIntervalMs: 100 #milliseconds
+            bus:
+                number: 1
+                address: 0x10
+            readIntervalMs: 250
