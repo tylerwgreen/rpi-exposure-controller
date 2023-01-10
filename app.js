@@ -1,23 +1,7 @@
-var time = Date.now();
-var processTime = function(processText = ''){
-	// console.log('processTime: ' + ((Date.now() - time)/1000) + ' | ' + processText);
-	time = Date.now();
-}
-processTime('app.js');
-
-/*
-process.on('SIGINT', (code) => {
-    StopAll();
-});
-process.on('SIGTERM', (code) => {
-    StopAll();
-});
-*/
-
 var app = {
 	config: null,
 	logger: null,
-	_logger: null, // configured logger object
+	_logger: null, // configuledRed logger object
 	init: function(){
 		// setup app environment
 		module.paths.push(__dirname + '/app');
@@ -31,16 +15,13 @@ var app = {
 		app._logger.init(app.config.get('logger'));
 		app.logger = app._logger.getLogger('app', 'error'); // set log level for the app
 		// initialize app
-// app.logger.warn('Pause before light read on expose init');
-app.logger.warn('Speed up boot, bootup feedback?');
-app.logger.warn('Set up sigint/sigterm/shutdown functions');
 		app.logger.debug('app.init()');
 		app.logger.verbose('initializing application');
+		// new Promise((resolve, reject) => {resolve();})
 		app.cache.init()
 		.then(app.peripherals.init)
 		.then(app.tasks.init)
 		.then(result => {
-// processTime('application initialized');
 			app.logger.info('application initialized');
 			app.tasks.start();
 		})
@@ -103,16 +84,16 @@ app.logger.warn('Set up sigint/sigterm/shutdown functions');
 				var interval = setInterval(function(){
 					// animate leds while waiting for CPU to calm down
 					if(i == 3){
-						app.peripherals.leds.leds.exposureOn.on();
+						app.peripherals.leds.leds.ledGreen.on();
 					}else if(i == 2){
-						app.peripherals.leds.leds.exposureOff.on();
+						app.peripherals.leds.leds.ledYellow.on();
 					}else if(i == 1){
-						app.peripherals.leds.leds.peripheralFeedback.on();
+						app.peripherals.leds.leds.ledRed.on();
 					}
 					if(i <= 0){
-						app.peripherals.leds.leds.exposureOn.off();
-						app.peripherals.leds.leds.exposureOff.off();
-						app.peripherals.leds.leds.peripheralFeedback.off();
+						app.peripherals.leds.leds.ledGreen.off();
+						app.peripherals.leds.leds.ledYellow.off();
+						app.peripherals.leds.leds.ledRed.off();
 						clearInterval(interval);
 						app.tasks.settings.enable();
 					}
@@ -141,7 +122,7 @@ app.logger.warn('Set up sigint/sigterm/shutdown functions');
 				app.tasks.disableAll();
 				app.peripherals.uvSensor.exposure.reset();
 				app.tasks.settings._lcd.enable();
-				app.peripherals.leds.leds.exposureOff.on();
+				app.peripherals.leds.leds.ledRed.on();
 				app.peripherals.buttons.buttons.exposureUp.enable();
 				app.peripherals.buttons.buttons.exposureDown.enable();
 				app.peripherals.buttons.buttons.exposureStart.enable();
@@ -152,8 +133,8 @@ app.logger.warn('Set up sigint/sigterm/shutdown functions');
 			},
 			_lcd: {
 				padding: {
-					uva: 8,
-					exposure: 12,
+					uva: 9,
+					exposure: 14,
 				},
 				intervalMs: null,
 				interval: null,
@@ -164,7 +145,7 @@ app.logger.warn('Set up sigint/sigterm/shutdown functions');
 				enable: function(){
 					app.logger.debug('app.tasks.settings._lcd.enable()');
 					app.peripherals.lcdScreen.update.top(
-						'UVA/Min:' + app.peripherals.lcdScreen.padTextLeft('0', app.tasks.settings._lcd.padding.uva)
+						'UVA/Min' + app.peripherals.lcdScreen.padTextLeft('0', app.tasks.settings._lcd.padding.uva)
 					);
 					app.tasks.settings._lcd._updateExposure(app.cache.exposure.get());
 					app.tasks.settings._lcd.interval = setInterval(function(){
@@ -172,8 +153,8 @@ app.logger.warn('Set up sigint/sigterm/shutdown functions');
 						// console.log(data);
 						// console.log('a|' + data.uva.read + '|' + data.uva.accumulated + '|b|' + data.uvb.read + '|' + data.uvb.accumulated + '|s|' + data.elapsedSec);
 						app.peripherals.lcdScreen.update.top(
-							'UVA/Min:' + app.peripherals.lcdScreen.padTextLeft(
-								app.peripherals.lcdScreen.shortenNumber(data.uva.readPerMin, 1)
+							'UVA/Min' + app.peripherals.lcdScreen.padTextLeft(
+								app.peripherals.lcdScreen.shortenNumber(data.uva.readPerMin)
 							, app.tasks.settings._lcd.padding.uva)
 						);
 						app.tasks.settings._lcd._updateExposure(app.cache.exposure.get());
@@ -186,8 +167,8 @@ app.logger.warn('Set up sigint/sigterm/shutdown functions');
 				_updateExposure: function(exposure){
 					app.logger.silly('app.tasks.settings._lcd._updateExposure()');
 					app.peripherals.lcdScreen.update.bottom(
-						'Exp:' + app.peripherals.lcdScreen.padTextLeft(
-							app.peripherals.lcdScreen.shortenNumber(exposure, 0)
+						'Xp' + app.peripherals.lcdScreen.padTextLeft(
+							app.peripherals.lcdScreen.shortenNumber(exposure)
 							+ ' ' + app.tasks.settings._lcd._getExposureTime(exposure)
 						, app.tasks.settings._lcd.padding.exposure)
 					);
@@ -199,15 +180,26 @@ app.logger.warn('Set up sigint/sigterm/shutdown functions');
 						return '00:00';
 					}
 					var expPerMs = ((data.uva.readPerMin / 60) / 60) / 1000;
+					var expHrs = (((exposure / expPerMs) / 1000) / 60) / 60 / 60;
 					var expMins = (((exposure / expPerMs) / 1000) / 60) / 60;
 					var expSecs = (((exposure / expPerMs) / 1000) / 60);
-					if(expMins >= 1){
+					if(expHrs >= 1){
+						expMins = expMins - (Math.floor(expHrs) * 60);
+						expSecs = expSecs - (Math.floor(expHrs) * 60 * 60);
+					}else if(expMins >= 1){
 						expSecs = expSecs - (Math.floor(expMins) * 60);
 					}
 					// console.log(exposure + '|' + data.uva.readPerMin + '|' + parseFloat(expPerMs).toFixed(4) + '|' + parseFloat(expMins).toFixed(4) + '|' + parseFloat(expSecs).toFixed(4));
-					expMins = app.peripherals.lcdScreen.padTextLeft(Math.floor(expMins), 2, '0');
-					expSecs = app.peripherals.lcdScreen.padTextLeft(Math.floor(expSecs), 2, '0');
-					return expMins + ':' + expSecs;
+					// console.log(expHrs.toFixed(2) + ':' + expMins.toFixed(2) + ':' + expSecs.toFixed(2));
+					if(expHrs >= 1){
+						expHrs = app.peripherals.lcdScreen.padTextLeft(Math.floor(expHrs), 2, '0');
+						expMins = app.peripherals.lcdScreen.padTextLeft(Math.floor(expMins), 2, '0');
+						return expHrs + 'h' + expMins;
+					}else{
+						expMins = app.peripherals.lcdScreen.padTextLeft(Math.floor(expMins), 2, '0');
+						expSecs = app.peripherals.lcdScreen.padTextLeft(Math.floor(expSecs), 2, '0');
+						return expMins + ':' + expSecs;
+					}
 				},
 			},
 			exposure: {
@@ -249,9 +241,14 @@ app.logger.warn('Set up sigint/sigterm/shutdown functions');
 			enable: function(){
 				app.logger.debug('app.tasks.exposure.enable()');
 				app.tasks.disableAll();
-				app.peripherals.relays.relays.expose.on();
-				app.peripherals.relays.relays.idle.off();
+				app.peripherals.relays.relays.relayA.on();
+				app.peripherals.relays.relays.relayB.on();
+				app.peripherals.leds.leds.ledRed.off();
+				app.peripherals.leds.leds.ledYellow.flash();
+				app.tasks.exposure._lcd.wait();
+				// wait for UV light to turn on
 				setTimeout(function(){
+					app.peripherals.leds.leds.ledYellow.off();
 					var data = app.peripherals.uvSensor.exposure.get();
 					if(data.uva.read <= 0){
 						app.logger.warn('No UVA reading');
@@ -259,49 +256,71 @@ app.logger.warn('Set up sigint/sigterm/shutdown functions');
 						return;
 					}
 					app.tasks.exposure._lcd.enable();
-					app.peripherals.leds.leds.exposureOff.off();
-					app.peripherals.leds.leds.exposureOn.flash();
-					app.peripherals.buzzer.beep();
+					app.peripherals.leds.leds.ledRed.off();
+					app.peripherals.leds.leds.ledGreen.flash();
 					app.peripherals.buttons.buttons.exposureStop.enable();
 					var maxExp = app.cache.exposure.get();
+					var uvLostI = 0;
+					var previousUvAccumulated = 0;
+					var halfUvAccumulatedBuzz = true;
+					// check the UV esposure amount
 					app.tasks.exposure._exposureInterval = setInterval(function(){
 						var data = app.peripherals.uvSensor.exposure.get();
-console.log(data.uva.accumulated + '|' + maxExp);
-						if(data.uva.read <= 0){
-							app.logger.error('Lost UVA reading');
-							app.tasks.settings.enable();
-						}
+						// console.log(data.uva.accumulated + '|' + maxExp);
 						if(data.uva.accumulated >= maxExp){
 							app.tasks.settings.enable();
+						}else{
+							// buzz at interval
+							if(data.uva.accumulated - previousUvAccumulated >= app.config.get('tasks.exposure.buzzIncrement')){
+								app.peripherals.buzzer.buzzLong();
+								previousUvAccumulated = data.uva.accumulated;
+								halfUvAccumulatedBuzz = true;
+							}else if(
+									(data.uva.accumulated - previousUvAccumulated >= (app.config.get('tasks.exposure.buzzIncrement') / 2))
+								&&	true === halfUvAccumulatedBuzz
+							){
+								halfUvAccumulatedBuzz = false;
+								app.peripherals.buzzer.buzz();
+							}
+							// check if UV gets lost
+							if(data.uva.read <= 0){
+								if(uvLostI >= 1){
+									app.logger.error('Lost UVA reading');
+									app.tasks.settings.enable();
+								}
+								uvLostI++;
+							}else{
+								uvLostI = 0;
+							}
 						}
-					}, 1000);
-				}, 1000);
+					}, 100);
+				}, 2000);
 			},
 			disable: function(){
 				app.logger.debug('app.tasks.exposure.disable()');
 				clearInterval(app.tasks.exposure._exposureInterval);
 				app.tasks.exposure._lcd.disable();
-				app.peripherals.leds.leds.exposureOn.off();
+				app.peripherals.leds.leds.ledGreen.off();
 				app.peripherals.buzzer.off();
-				app.peripherals.relays.relays.expose.off();
-				app.peripherals.relays.relays.idle.on();
+				app.peripherals.relays.relays.relayA.off();
+				app.peripherals.relays.relays.relayB.off();
 			},
 			// enable alias
 			start: function(){
 				app.logger.debug('app.tasks.exposure.start()');
 				app.tasks.exposure.enable();
 			},
-			// disable alias
-			/* stop: function(){
-				app.logger.debug('app.tasks.exposure.stop()');
-				app.tasks.exposure.disable();
-			}, */
 			_lcd: {
 				intervalMs: null,
 				interval: null,
 				init: function(){
 					app.logger.debug('app.tasks.exposure._lcd.init()');
 					app.tasks.exposure._lcd.intervalMs = app.config.get('tasks.exposure.lcdInterval');
+				},
+				wait: function(){
+					app.logger.debug('app.tasks.exposure._lcd.wait()');
+					app.peripherals.lcdScreen.update.top('Turning on LEDs');
+					app.peripherals.lcdScreen.update.bottom('Reading UVA');
 				},
 				enable: function(){
 					app.logger.debug('app.tasks.exposure._lcd.enable()');
@@ -312,13 +331,13 @@ console.log(data.uva.accumulated + '|' + maxExp);
 						// console.log(data);
 						// console.log('a|' + data.uva.read + '|' + data.uva.accumulated + '|b|' + data.uvb.read + '|' + data.uvb.accumulated + '|s|' + data.elapsedSec);
 						app.peripherals.lcdScreen.update.top(
-							'UVA:' + app.peripherals.lcdScreen.padTextLeft(app.peripherals.lcdScreen.shortenNumber(data.uva.accumulated), 12)
+							'UVA' + app.peripherals.lcdScreen.padTextLeft(app.peripherals.lcdScreen.shortenNumber(data.uva.accumulated), 13)
 						);
 						app.peripherals.lcdScreen.update.bottom(
-							'Exp:' + app.peripherals.lcdScreen.padTextLeft(
-								app.peripherals.lcdScreen.shortenNumber(app.cache.exposure.get(), 0)
+							'Xp' + app.peripherals.lcdScreen.padTextLeft(
+								app.peripherals.lcdScreen.shortenNumber(app.cache.exposure.get())
 								+ ' ' + app.tasks.exposure._lcd._getExposureTime()
-							, 12)
+							, 14)
 						);
 					}, app.tasks.exposure._lcd.intervalMs);
 				},
@@ -329,12 +348,26 @@ console.log(data.uva.accumulated + '|' + maxExp);
 				_getExposureTime: function(exposure){
 					app.logger.silly('app.tasks.settings._lcd._getExposureTime()');
 					var data = app.peripherals.uvSensor.exposure.get();
+					// console.log(data.elapsedMin + '|' + data.elapsedSec);
+					// data.elapsedMin = Math.floor(Math.random() * (120 - 0 + 1) + 0);
+					// data.elapsedSec = (data.elapsedMin * 60) + Math.floor(Math.random() * (60 - 0 + 1) + 0);
+					// console.log(data.elapsedMin + '|' + data.elapsedSec);
+					var hrs = data.elapsedMin / 60;
 					var mins = data.elapsedMin;
 					var secs = data.elapsedSec;
-					if(mins >= 1){
-						secs = secs - (mins * 60);
+					// console.log(hrs.toFixed(1) + ':' + mins.toFixed(1) + ':' + secs.toFixed(1));
+					if(hrs >= 1){
+						secs = secs - (Math.floor(mins) * 60);
+						mins = mins - (Math.floor(hrs) * 60);
+					}else if(mins >= 1){
+						secs = secs - (Math.floor(mins) * 60);
 					}
-					return app.peripherals.lcdScreen.padTextLeft(mins, 2, '0') + ':' + app.peripherals.lcdScreen.padTextLeft(secs, 2, '0');
+					// console.log(hrs.toFixed(1) + ':' + mins.toFixed(1) + ':' + secs.toFixed(1));
+					if(hrs >= 1){
+						return app.peripherals.lcdScreen.padTextLeft(Math.floor(hrs), 2, '0') + 'h' + app.peripherals.lcdScreen.padTextLeft(Math.floor(mins), 2, '0');
+					}else{
+						return app.peripherals.lcdScreen.padTextLeft(Math.floor(mins), 2, '0') + ':' + app.peripherals.lcdScreen.padTextLeft(Math.floor(secs), 2, '0');
+					}
 				},
 			},
 		},
@@ -373,8 +406,8 @@ console.log(data.uva.accumulated + '|' + maxExp);
 				return new Promise((resolve, reject) => {
 					var gpioButton = require('gpioButton');
 					gpioButton.init(app._logger, app.config.get('peripherals.buttons.config')).then(result => {
-						app.peripherals.buttons.buttons.exposureUp = gpioButton.build('exposureUp', app.config.get('peripherals.buttons.buttons.exposureUp.gpioPin'), app.peripherals.buttons.callbacks.exposureUp);
-						app.peripherals.buttons.buttons.exposureDown = gpioButton.build('exposureDown', app.config.get('peripherals.buttons.buttons.exposureDown.gpioPin'), app.peripherals.buttons.callbacks.exposureDown);
+						app.peripherals.buttons.buttons.exposureUp = gpioButton.build('exposureUp', app.config.get('peripherals.buttons.buttons.exposureUp.gpioPin'), app.peripherals.buttons.callbacks.exposureUp, app.peripherals.buttons.callbacks.exposureUpHold);
+						app.peripherals.buttons.buttons.exposureDown = gpioButton.build('exposureDown', app.config.get('peripherals.buttons.buttons.exposureDown.gpioPin'), app.peripherals.buttons.callbacks.exposureDown, app.peripherals.buttons.callbacks.exposureDownHold);
 						app.peripherals.buttons.buttons.exposureStart = gpioButton.build('exposureStart', app.config.get('peripherals.buttons.buttons.exposureStart.gpioPin'), app.peripherals.buttons.callbacks.exposureStart);
 						app.peripherals.buttons.buttons.exposureStop = gpioButton.build('exposureStop', app.config.get('peripherals.buttons.buttons.exposureStop.gpioPin'), app.peripherals.buttons.callbacks.exposureStop);
 						app.logger.info('buttons initialized');
@@ -392,15 +425,25 @@ console.log(data.uva.accumulated + '|' + maxExp);
 			callbacks: {
 				_click: function(){
 					app.logger.silly('app.peripherals.buttons.callbacks._click()');
-					app.peripherals.leds.leds.peripheralFeedback.blip();
+					app.peripherals.leds.leds.ledYellow.blip();
 				},
 				exposureUp: function(){
 					app.logger.debug('app.peripherals.buttons.callbacks.exposureUp()');
 					app.peripherals.buttons.callbacks._click();
 					app.tasks.settings.exposure.up();
 				},
+				exposureUpHold: function(){
+					app.logger.debug('app.peripherals.buttons.callbacks.exposureUpHold()');
+					app.peripherals.buttons.callbacks._click();
+					app.tasks.settings.exposure.up();
+				},
 				exposureDown: function(){
 					app.logger.debug('app.peripherals.buttons.callbacks.exposureDown()');
+					app.peripherals.buttons.callbacks._click();
+					app.tasks.settings.exposure.down();
+				},
+				exposureDownHold: function(){
+					app.logger.debug('app.peripherals.buttons.callbacks.exposureDownHold()');
 					app.peripherals.buttons.callbacks._click();
 					app.tasks.settings.exposure.down();
 				},
@@ -413,15 +456,14 @@ console.log(data.uva.accumulated + '|' + maxExp);
 					app.logger.debug('app.peripherals.buttons.callbacks.exposureStop()');
 					app.peripherals.buttons.callbacks._click();
 					app.tasks.settings.enable();
-					// app.tasks.exposure.stop();
 				},
 			}
 		},
 		leds: {
 			leds: {
-				exposureOn: null,
-				exposureOff: null,
-				peripheralFeedback: null,
+				ledGreen: null,
+				ledRed: null,
+				ledYellow: null,
 			},
 			init: function(){
 				app.logger.debug('app.peripherals.leds.init()');
@@ -429,9 +471,9 @@ console.log(data.uva.accumulated + '|' + maxExp);
 				return new Promise((resolve, reject) => {
 					var gpioLed = require('gpioLed');
 					gpioLed.init(app._logger, app.config.get('peripherals.leds.config')).then(result => {
-						app.peripherals.leds.leds.exposureOn = gpioLed.build('exposureOn', app.config.get('peripherals.leds.leds.exposureOn.gpioPin'));
-						app.peripherals.leds.leds.exposureOff = gpioLed.build('exposureOff', app.config.get('peripherals.leds.leds.exposureOff.gpioPin'));
-						app.peripherals.leds.leds.peripheralFeedback = gpioLed.build('peripheralFeedback', app.config.get('peripherals.leds.leds.peripheralFeedback.gpioPin'));
+						app.peripherals.leds.leds.ledGreen = gpioLed.build('ledGreen', app.config.get('peripherals.leds.leds.ledGreen.gpioPin'));
+						app.peripherals.leds.leds.ledRed = gpioLed.build('ledRed', app.config.get('peripherals.leds.leds.ledRed.gpioPin'));
+						app.peripherals.leds.leds.ledYellow = gpioLed.build('ledYellow', app.config.get('peripherals.leds.leds.ledYellow.gpioPin'));
 						app.logger.info('leds initialized');
 						resolve('leds initialized');
 					});
@@ -470,8 +512,8 @@ console.log(data.uva.accumulated + '|' + maxExp);
 		},
 		relays: {
 			relays: {
-				expose: null,
-				idle: null,
+				relayA: null,
+				relayB: null,
 			},
 			init: function(){
 				app.logger.debug('app.peripherals.relays.init()');
@@ -479,8 +521,8 @@ console.log(data.uva.accumulated + '|' + maxExp);
 				return new Promise((resolve, reject) => {
 					var gpioRelay = require('gpioRelay');
 					gpioRelay.init(app._logger, app.config.get('peripherals.relays.config')).then(result => {
-						app.peripherals.relays.relays.expose = gpioRelay.build('expose', app.config.get('peripherals.relays.relays.expose.gpioPin'));
-						app.peripherals.relays.relays.idle = gpioRelay.build('idle', app.config.get('peripherals.relays.relays.idle.gpioPin'));
+						app.peripherals.relays.relays.relayA = gpioRelay.build('relayA', app.config.get('peripherals.relays.relays.relayA.gpioPin'));
+						app.peripherals.relays.relays.relayB = gpioRelay.build('relayB', app.config.get('peripherals.relays.relays.relayB.gpioPin'));
 						app.logger.info('relays initialized');
 						resolve('relays initialized');
 					});
@@ -554,9 +596,9 @@ console.log(data.uva.accumulated + '|' + maxExp);
 			},
 			shortenNumber: function(num, decimals = 2){
 				if(num >= 1000000){
-					return (Math.round((num / 1000000) * 100) / 100).toFixed(decimals) + 'm';
+					return (num / 1000000).toFixed(decimals) + 'm';
 				}else if(num >= 1000){
-					return (Math.round((num / 1000) * 100) / 100).toFixed(decimals) + 'k';
+					return (num / 1000).toFixed(decimals) + 'k';
 				}
 				return num;
 			},

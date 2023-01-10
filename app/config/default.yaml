@@ -11,19 +11,20 @@ logger:
     fileLogging: true
     fileLoggingLevel: error
     consoleLogging: true
-    consoleLoggingLevel: debug
+    consoleLoggingLevel: info
     # consoleLoggingLevel: silly
 cache:
     id: cache.json
 tasks:
     settings:
-        lcdInterval: 1000 #milliseconds
+        lcdInterval: 1000 # milliseconds
         exposure:
-            increments: 20000 #uv accumulated per min
-            max: 1100000
-            min: 100000
+            increments: 10000 # uv accumulated per min
+            max: 2000000
+            min: 10000
     exposure:
-        lcdInterval: 250 #milliseconds
+        lcdInterval: 250 # milliseconds
+        buzzIncrement: 50000 # uv accumulated per min
 peripherals:
     lcdScreen:
         config:
@@ -35,7 +36,9 @@ peripherals:
     buttons:
         config:
             consoleLoggingLevel: debug
-            debounceMs: 500 #milliseconds
+            debounceMs: 500 # milliseconds
+            holdDelay: 500 # milliseconds
+            holdRepeat: 100 # milliseconds
         buttons:
             exposureUp:
                 gpioPin: 27
@@ -49,12 +52,12 @@ peripherals:
         config:
             consoleLoggingLevel: debug
         leds:
-            exposureOn:
+            ledGreen:
                 gpioPin: 16
-            exposureOff:
-                gpioPin: 20
-            peripheralFeedback:
+            ledRed:
                 gpioPin: 21
+            ledYellow:
+                gpioPin: 20
     buzzer:
         config:
             consoleLoggingLevel: debug
@@ -63,12 +66,13 @@ peripherals:
         config:
             consoleLoggingLevel: debug
         relays:
-            expose:
+            relayA:
                 gpioPin: 14
-            idle:
+            relayB:
                 gpioPin: 15
     uvSensor:
         config:
+            lowLightDebug: false # configures uvSensor to read low levels of UV from indoor uv lights
             consoleLoggingLevel: debug
             bus:
                 number: 1

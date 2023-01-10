@@ -3,10 +3,12 @@
 const i2c = require('i2c-bus');
 
 var gpioUvSensor = {
+	_lowLightDebug: false,
 	_bus: null,
 	_busNumber: null,
 	_busAddress: null,
 	init: function(logger, config){
+		gpioUvSensor._lowLightDebug = config.lowLightDebug;
 		gpioUvSensor._busNumber = config.bus.number;
 		gpioUvSensor._busAddress = config.bus.address;
 		gpioUvSensor._logger = logger.getLogger('gpioUvSensor', config.consoleLoggingLevel);
@@ -144,16 +146,22 @@ var gpioUvSensor = {
 				gpioUvSensor.exposure._data.elapsedMin = Math.floor(gpioUvSensor.exposure._data.elapsedSec / 60);
 				// uva
 				if(data.uva < 0){
-// data.uva = (data.uva * -1) + 1000;
-					data.uva = 0;
+					if(gpioUvSensor._lowLightDebug){
+						data.uva = data.uva * -120;
+					}else{
+						data.uva = 0;
+					}
 				}
 				gpioUvSensor.exposure._data.uva.read = data.uva;
 				gpioUvSensor.exposure._data.uva.readPerMin = data.uva * ((60 * 1000) / gpioUvSensor.exposure._tick.intervalMs);
 				gpioUvSensor.exposure._data.uva.accumulated = gpioUvSensor.exposure._data.uva.accumulated + data.uva;
 				// uvb
 				if(data.uvb < 0){
-// data.uvb = (data.uvb * -1) + 1000;
-					data.uvb = 0;
+					if(gpioUvSensor._lowLightDebug){
+						data.uvb = data.uvb * -40;
+					}else{
+						data.uvb = 0;
+					}
 				}
 				gpioUvSensor.exposure._data.uvb.read = data.uvb;
 				gpioUvSensor.exposure._data.uvb.readPerMin = data.uvb * ((60 * 1000) / gpioUvSensor.exposure._tick.intervalMs);
