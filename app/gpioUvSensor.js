@@ -104,6 +104,11 @@ var gpioUvSensor = {
 				read: 0,
 				accumulated: 0,
 			},
+			uvIndex: {
+				index: 0,
+				level: 0,
+				text: '',
+			}
 		},
 		_tick: {
 			tickPrevious: 0,
@@ -129,25 +134,31 @@ var gpioUvSensor = {
 				gpioUvSensor._logger.silly('gpioUvSensor.exposure._tick.update()');
 				data = gpioUvSensor.get();
 // console.log(data);
+				// uv index
+				gpioUvSensor.exposure._data.uvIndex.index = data.uvIndex.toFixed(2);
+				gpioUvSensor.exposure._data.uvIndex.level = data.uvIndexLevel;
+				gpioUvSensor.exposure._data.uvIndex.text = data.uvIndexText;
+				// elapsed time
 				gpioUvSensor.exposure._data.elapsedMs = gpioUvSensor.exposure._data.elapsedMs += gpioUvSensor.exposure._tick.intervalMs;
 				gpioUvSensor.exposure._data.elapsedSec = Math.floor(gpioUvSensor.exposure._data.elapsedMs / 1000);
 				gpioUvSensor.exposure._data.elapsedMin = Math.floor(gpioUvSensor.exposure._data.elapsedSec / 60);
-if(data.uva < 0){
-	data.uva = data.uva * -1;
-}else{
-	data.uva = 0;
-}
+				// uva
+				if(data.uva < 0){
+// data.uva = (data.uva * -1) + 1000;
+					data.uva = 0;
+				}
 				gpioUvSensor.exposure._data.uva.read = data.uva;
 				gpioUvSensor.exposure._data.uva.readPerMin = data.uva * ((60 * 1000) / gpioUvSensor.exposure._tick.intervalMs);
 				gpioUvSensor.exposure._data.uva.accumulated = gpioUvSensor.exposure._data.uva.accumulated + data.uva;
+				// uvb
 				if(data.uvb < 0){
-					data.uvb = data.uvb * -1;
-				}else{
+// data.uvb = (data.uvb * -1) + 1000;
 					data.uvb = 0;
 				}
 				gpioUvSensor.exposure._data.uvb.read = data.uvb;
 				gpioUvSensor.exposure._data.uvb.readPerMin = data.uvb * ((60 * 1000) / gpioUvSensor.exposure._tick.intervalMs);
 				gpioUvSensor.exposure._data.uvb.accumulated = gpioUvSensor.exposure._data.uvb.accumulated + data.uvb;
+// console.log(gpioUvSensor.exposure._data);
 			},
 		},
 		reset: function(){

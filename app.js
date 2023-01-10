@@ -31,6 +31,9 @@ var app = {
 		app._logger.init(app.config.get('logger'));
 		app.logger = app._logger.getLogger('app', 'error'); // set log level for the app
 		// initialize app
+// app.logger.warn('Pause before light read on expose init');
+app.logger.warn('Speed up boot, bootup feedback?');
+app.logger.warn('Set up sigint/sigterm/shutdown functions');
 		app.logger.debug('app.init()');
 		app.logger.verbose('initializing application');
 		app.cache.init()
@@ -246,30 +249,32 @@ var app = {
 			enable: function(){
 				app.logger.debug('app.tasks.exposure.enable()');
 				app.tasks.disableAll();
-				var data = app.peripherals.uvSensor.exposure.get();
-				if(data.uva.read <= 0){
-					app.logger.warn('No UVA reading');
-					app.tasks.settings.enable();
-					return;
-				}
-				app.tasks.exposure._lcd.enable();
-				app.peripherals.leds.leds.exposureOff.off();
-				app.peripherals.leds.leds.exposureOn.flash();
-				app.peripherals.buzzer.beep();
 				app.peripherals.relays.relays.expose.on();
 				app.peripherals.relays.relays.idle.off();
-				app.peripherals.buttons.buttons.exposureStop.enable();
-				var maxExp = app.cache.exposure.get();
-				app.tasks.exposure._exposureInterval = setInterval(function(){
+				setTimeout(function(){
 					var data = app.peripherals.uvSensor.exposure.get();
-// console.log(data.uva.accumulated + '|' + maxExp);
 					if(data.uva.read <= 0){
-						app.logger.error('Lost UVA reading');
+						app.logger.warn('No UVA reading');
 						app.tasks.settings.enable();
+						return;
 					}
-					if(data.uva.accumulated >= maxExp){
-						app.tasks.settings.enable();
-					}
+					app.tasks.exposure._lcd.enable();
+					app.peripherals.leds.leds.exposureOff.off();
+					app.peripherals.leds.leds.exposureOn.flash();
+					app.peripherals.buzzer.beep();
+					app.peripherals.buttons.buttons.exposureStop.enable();
+					var maxExp = app.cache.exposure.get();
+					app.tasks.exposure._exposureInterval = setInterval(function(){
+						var data = app.peripherals.uvSensor.exposure.get();
+console.log(data.uva.accumulated + '|' + maxExp);
+						if(data.uva.read <= 0){
+							app.logger.error('Lost UVA reading');
+							app.tasks.settings.enable();
+						}
+						if(data.uva.accumulated >= maxExp){
+							app.tasks.settings.enable();
+						}
+					}, 1000);
 				}, 1000);
 			},
 			disable: function(){

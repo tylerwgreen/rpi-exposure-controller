@@ -19,9 +19,9 @@ tasks:
     settings:
         lcdInterval: 1000 #milliseconds
         exposure:
-            increments: 1000 #uv accumulated per min
-            max: 20000
-            min: 1000
+            increments: 20000 #uv accumulated per min
+            max: 1100000
+            min: 100000
     exposure:
         lcdInterval: 250 #milliseconds
 peripherals:
@@ -38,35 +38,35 @@ peripherals:
             debounceMs: 500 #milliseconds
         buttons:
             exposureUp:
-                gpioPin: 12
+                gpioPin: 27
             exposureDown:
-                gpioPin: 6
+                gpioPin: 22
             exposureStart:
-                gpioPin: 4
+                gpioPin: 17
             exposureStop:
-                gpioPin: 18
+                gpioPin: 4
     leds:
         config:
             consoleLoggingLevel: debug
         leds:
             exposureOn:
-                gpioPin: 17
-            exposureOff:
-                gpioPin: 27
-            peripheralFeedback:
                 gpioPin: 16
+            exposureOff:
+                gpioPin: 20
+            peripheralFeedback:
+                gpioPin: 21
     buzzer:
         config:
             consoleLoggingLevel: debug
-            gpioPin: 5
+            gpioPin: 26
     relays:
         config:
             consoleLoggingLevel: debug
         relays:
             expose:
-                gpioPin: 21
+                gpioPin: 14
             idle:
-                gpioPin: 20
+                gpioPin: 15
     uvSensor:
         config:
             consoleLoggingLevel: debug

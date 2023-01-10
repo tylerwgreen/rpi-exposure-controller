@@ -70,3 +70,10 @@ DietPi auto update uses a lot of CPU on boot, this caused poor performance on th
 CONFIG_CHECK_DIETPI_UPDATES=0
 CONFIG_CHECK_APT_UPDATES=0
 ```
+
+##UV Measurements taken with VEML6074
+Uvindex	uvaread	uvbread	uvarpm	uvbrpm
+4		2400	1760	575000	424000
+3		2090	1080	495000	244000
+2		1780	0500	420000	121000
+1		1100	0190	260000	039000

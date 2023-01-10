@@ -1,118 +1,22 @@
-{"label":"app","level":"error","timestamp":"2022-12-29T17:47:04.677Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T17:47:59.222Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T18:11:54.403Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T18:13:15.449Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T19:21:33.578Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T19:22:32.140Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T19:30:09.361Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T19:30:43.736Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T19:44:39.367Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T19:55:18.335Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T19:58:01.830Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T20:14:29.004Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T20:14:49.300Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T20:15:16.358Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T20:16:31.408Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T20:17:14.105Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T20:18:49.580Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T20:51:54.276Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T20:53:07.964Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T21:55:00.508Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T21:56:12.683Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T21:57:09.571Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T21:58:07.313Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T21:58:42.310Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:18:25.595Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:19:42.129Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:20:24.985Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:20:36.052Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:20:48.572Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:21:22.174Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:22:09.166Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:22:49.519Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:24:18.940Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:25:10.783Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:25:33.153Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:27:00.696Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:39:32.192Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:40:08.816Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:40:17.761Z"}
-{"label":"app","level":"error","timestamp":"2022-12-29T23:40:28.731Z"}
-{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T17:33:16.363Z"}
-{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T17:33:42.014Z"}
-{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T17:35:41.854Z"}
-{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T22:57:42.207Z"}
-{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T22:59:06.717Z"}
-{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T23:00:54.897Z"}
-{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T23:04:32.818Z"}
-{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T23:05:39.060Z"}
-{"code":"MODULE_NOT_FOUND","label":"app","level":"error","requireStack":["/root/rpi-exposure-controller/app/gpioLcd.js","/root/rpi-exposure-controller/app.js"],"timestamp":"2022-12-30T23:07:56.684Z"}
-{"label":"app","level":"error","timestamp":"2022-12-30T23:51:42.347Z"}
-{"label":"app","level":"error","timestamp":"2022-12-30T23:53:38.376Z"}
-{"label":"gpioButton","level":"verbose","message":"initializing gpioButton","timestamp":"2022-12-31T00:22:10.144Z"}
-{"label":"gpioLed","level":"verbose","message":"initializing gpioLed","timestamp":"2022-12-31T00:22:10.376Z"}
-{"label":"gpioBuzzer","level":"verbose","message":"initializing gpioBuzzer","timestamp":"2022-12-31T00:22:10.438Z"}
-{"label":"gpioRelay","level":"verbose","message":"initializing gpioRelay","timestamp":"2022-12-31T00:22:10.489Z"}
-{"label":"gpioPhotoResistor","level":"verbose","message":"initializing gpioPhotoResistor","timestamp":"2022-12-31T00:22:10.550Z"}
-{"label":"gpioLcdScreen","level":"verbose","message":"initializing gpioLcdScreen","timestamp":"2022-12-31T00:22:13.125Z"}
-{"label":"gpioButton","level":"info","message":"gpioButton initialized","timestamp":"2022-12-31T00:22:10.171Z"}
-{"label":"gpioLed","level":"info","message":"gpioLed initialized","timestamp":"2022-12-31T00:22:10.388Z"}
-{"label":"gpioBuzzer","level":"info","message":"gpioBuzzer initialized","timestamp":"2022-12-31T00:22:10.448Z"}
-{"label":"gpioRelay","level":"info","message":"gpioRelay initialized","timestamp":"2022-12-31T00:22:10.499Z"}
-{"label":"gpioPhotoResistor","level":"info","message":"gpioPhotoResistor initialized","timestamp":"2022-12-31T00:22:10.578Z"}
-{"label":"gpioLcdScreen","level":"info","message":"gpioLcdScreen initialized","timestamp":"2022-12-31T00:22:13.814Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T18:09:52.524Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T18:52:50.092Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T18:54:42.724Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T18:55:09.642Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:01:51.207Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:02:26.630Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:02:48.066Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:03:06.890Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:04:00.742Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:05:02.803Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:05:20.829Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:05:47.846Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:06:38.382Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:07:22.566Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:07:56.875Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:09:45.973Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:11:22.005Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:12:32.701Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T19:13:08.353Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T23:44:51.542Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T23:45:23.038Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T23:45:53.126Z"}
-{"label":"app","level":"error","timestamp":"2023-01-02T23:58:30.682Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T00:00:05.418Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T00:00:30.026Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T00:01:19.905Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T00:01:47.700Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T17:06:39.714Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T17:07:17.844Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T17:24:46.645Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T17:25:22.319Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T17:47:14.635Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T17:47:44.344Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T17:48:12.538Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T17:53:43.900Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T17:55:01.259Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T19:51:18.746Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T20:39:17.294Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T21:23:57.217Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T21:25:18.612Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T21:26:03.520Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T21:26:38.576Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T21:27:30.717Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T21:28:00.629Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T21:28:27.590Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T21:29:23.455Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T21:30:19.815Z"}
-{"label":"app","level":"error","timestamp":"2023-01-03T21:31:25.267Z"}
-{"label":"app","level":"error","timestamp":"2023-01-04T02:31:18.853Z"}
-{"label":"app","level":"error","timestamp":"2023-01-04T02:34:28.500Z"}
-{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-04T18:06:44.128Z"}
-{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-04T18:28:18.369Z"}
-{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-04T18:45:31.504Z"}
-{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-04T21:58:45.148Z"}
-{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-04T22:04:24.977Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:19:23.719Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:21:32.774Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:21:45.652Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:21:55.444Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:22:04.496Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:39:09.734Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:41:05.988Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:41:21.564Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:41:32.655Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:41:52.482Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:41:57.139Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:42:03.629Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:43:57.210Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:45:39.737Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:47:52.645Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:51:24.714Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:53:08.476Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-06T21:53:55.137Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-08T18:41:05.297Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-08T18:46:30.704Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-10T16:56:26.450Z"}
+{"label":"app","level":"error","message":"Lost UVA reading","timestamp":"2023-01-10T16:56:33.166Z"}
