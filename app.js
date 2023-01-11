@@ -328,10 +328,10 @@ var app = {
 					app.peripherals.uvSensor.exposure.reset();
 					app.tasks.exposure._lcd.interval = setInterval(function(){
 						var data = app.peripherals.uvSensor.exposure.get();
-						// console.log(data);
 						// console.log('a|' + data.uva.read + '|' + data.uva.accumulated + '|b|' + data.uvb.read + '|' + data.uvb.accumulated + '|s|' + data.elapsedSec);
 						app.peripherals.lcdScreen.update.top(
-							'UVA' + app.peripherals.lcdScreen.padTextLeft(app.peripherals.lcdScreen.shortenNumber(data.uva.accumulated), 13)
+								app.peripherals.lcdScreen.padTextLeft(app.peripherals.lcdScreen.shortenNumber(data.uva.readPerMin), 8)
+							+	app.peripherals.lcdScreen.padTextLeft(app.peripherals.lcdScreen.shortenNumber(data.uva.accumulated), 8)
 						);
 						app.peripherals.lcdScreen.update.bottom(
 							'Xp' + app.peripherals.lcdScreen.padTextLeft(
