@@ -78,3 +78,7 @@ Uvindex | uvaread | uvbread | uvarpm | uvbrpm
 3 | 2090 | 1080 | 495000 | 244000
 2 | 1780 | 0500 | 420000 | 121000
 1 | 1100 | 0190 | 260000 | 039000
+
+## Wiring / Hardware
+![Breadboard](https://github.com/tylerwgreen/rpi-exposure-controller/blob/production/schematics/breadboard.png)
+![Schematic](https://github.com/tylerwgreen/rpi-exposure-controller/blob/production/schematics/schematic.png)
