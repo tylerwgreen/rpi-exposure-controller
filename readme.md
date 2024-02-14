@@ -17,6 +17,20 @@ DietPi-RAMlog: Makes /var/log a RAM disk, preserves file structure on reboot
 OpenSSH Server: Feature-rich SSH server with SFTP and SCP support
 Python 3: Runtime system, pip package installer and development headers
 
+#### DietPi config
+DietPi auto update uses a lot of CPU on boot, this caused poor performance on the Raspberry Pi Zero
+```
+/boot/dietpi.txt
+```
+```
+CONFIG_CHECK_DIETPI_UPDATES=0
+CONFIG_CHECK_APT_UPDATES=0
+```
+
+#####Advanced Options
+```dietpi-config```
+I2C Frequency:	10kHz
+
 ## pigpio
 
 ```
@@ -59,22 +73,6 @@ Use a 6Kohm resistor to ensure that current from a 3.3V source cannot exceed 0.5
 ```
 ~/rpi-exposure-controller/shell/autostart.sh
 exit 0
-```
-
-## RPI Config
-
-/boot/config.txt
-Change ```dtparam=i2c_baudrate=100000``` to ```dtparam=i2c_baudrate=10000```
-![See i2c Sync Issue](https://github.com/fivdi/i2c-bus/issues/36)
-
-## DietPi config
-DietPi auto update uses a lot of CPU on boot, this caused poor performance on the Raspberry Pi Zero
-```
-/boot/dietpi.txt
-```
-```
-CONFIG_CHECK_DIETPI_UPDATES=0
-CONFIG_CHECK_APT_UPDATES=0
 ```
 
 ## UV Measurements taken with VEML6074
