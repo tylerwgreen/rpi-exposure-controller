@@ -61,6 +61,12 @@ Use a 6Kohm resistor to ensure that current from a 3.3V source cannot exceed 0.5
 exit 0
 ```
 
+## RPI Config
+
+/boot/config.txt
+Change ```dtparam=i2c_baudrate=100000``` to ```dtparam=i2c_baudrate=10000```
+![See i2c Sync Issue](https://github.com/fivdi/i2c-bus/issues/36)
+
 ## DietPi config
 DietPi auto update uses a lot of CPU on boot, this caused poor performance on the Raspberry Pi Zero
 ```
