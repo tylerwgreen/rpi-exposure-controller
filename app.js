@@ -132,7 +132,7 @@ var app = {
 				app.tasks.settings._lcd.disable();
 			},
 			_lcd: {
-				padding: {
+				textPadding: {
 					uva: 9,
 					exposure: 14,
 				},
@@ -145,7 +145,7 @@ var app = {
 				enable: function(){
 					app.logger.debug('app.tasks.settings._lcd.enable()');
 					app.peripherals.lcdScreen.update.top(
-						'UVA/Min' + app.peripherals.lcdScreen.padTextLeft('0', app.tasks.settings._lcd.padding.uva)
+						'UVA/Min' + app.peripherals.lcdScreen.padTextLeft('0', app.tasks.settings._lcd.textPadding.uva)
 					);
 					app.tasks.settings._lcd._updateExposure(app.cache.exposure.get());
 					app.tasks.settings._lcd.interval = setInterval(function(){
@@ -155,7 +155,7 @@ var app = {
 						app.peripherals.lcdScreen.update.top(
 							'UVA/Min' + app.peripherals.lcdScreen.padTextLeft(
 								app.peripherals.lcdScreen.shortenNumber(data.uva.readPerMin)
-							, app.tasks.settings._lcd.padding.uva)
+							, app.tasks.settings._lcd.textPadding.uva)
 						);
 						app.tasks.settings._lcd._updateExposure(app.cache.exposure.get());
 					}, app.tasks.settings._lcd.intervalMs);
@@ -170,7 +170,7 @@ var app = {
 						'Xp' + app.peripherals.lcdScreen.padTextLeft(
 							app.peripherals.lcdScreen.shortenNumber(exposure)
 							+ ' ' + app.tasks.settings._lcd._getExposureTime(exposure)
-						, app.tasks.settings._lcd.padding.exposure)
+						, app.tasks.settings._lcd.textPadding.exposure)
 					);
 				},
 				_getExposureTime: function(exposure){
