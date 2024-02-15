@@ -59,6 +59,7 @@ var app = {
 		}
 	},
 	tasks: {
+		_currentTask: null,
 		init: function(){
 			app.logger.debug('app.tasks.init()');
 			app.logger.verbose('initializing tasks');
@@ -103,6 +104,7 @@ var app = {
 		},
 		disableAll: function(){
 			app.logger.debug('app.tasks.disableAll()');
+			app.tasks._currentTask = null;
 			app.peripherals.buttons.disableAll();
 			app.tasks.settings.disable();
 			app.tasks.exposure.disable();
@@ -126,6 +128,8 @@ var app = {
 				app.peripherals.buttons.buttons.exposureUp.enable();
 				app.peripherals.buttons.buttons.exposureDown.enable();
 				app.peripherals.buttons.buttons.exposureStart.enable();
+				app.peripherals.buttons.buttons.exposureStop.enable();
+				app.tasks._currentTask = 'settings';
 			},
 			disable: function(){
 				app.logger.debug('app.tasks.settings.disable()');
@@ -226,6 +230,18 @@ var app = {
 					}
 				},
 			},
+			relayOverride: {
+				enable: function(){
+					app.logger.debug('app.tasks.settings.relayOverride.enable()');
+					app.peripherals.relays.relays.relayA.on();
+					app.peripherals.relays.relays.relayB.on();
+				},
+				disable: function(){
+					app.logger.debug('app.tasks.settings.relayOverride.disable()');
+					app.peripherals.relays.relays.relayA.off();
+					app.peripherals.relays.relays.relayB.off();
+				}
+			}
 		},
 		exposure: {
 			_exposureInterval: null,
@@ -246,6 +262,7 @@ var app = {
 				app.peripherals.leds.leds.ledRed.off();
 				app.peripherals.leds.leds.ledYellow.flash();
 				app.tasks.exposure._lcd.wait();
+				app.tasks._currentTask = 'exposure';
 				// wait for UV light to turn on
 				setTimeout(function(){
 					app.peripherals.leds.leds.ledYellow.off();
@@ -409,7 +426,13 @@ var app = {
 						app.peripherals.buttons.buttons.exposureUp = gpioButton.build('exposureUp', app.config.get('peripherals.buttons.buttons.exposureUp.gpioPin'), app.peripherals.buttons.callbacks.exposureUp, app.peripherals.buttons.callbacks.exposureUpHold);
 						app.peripherals.buttons.buttons.exposureDown = gpioButton.build('exposureDown', app.config.get('peripherals.buttons.buttons.exposureDown.gpioPin'), app.peripherals.buttons.callbacks.exposureDown, app.peripherals.buttons.callbacks.exposureDownHold);
 						app.peripherals.buttons.buttons.exposureStart = gpioButton.build('exposureStart', app.config.get('peripherals.buttons.buttons.exposureStart.gpioPin'), app.peripherals.buttons.callbacks.exposureStart);
-						app.peripherals.buttons.buttons.exposureStop = gpioButton.build('exposureStop', app.config.get('peripherals.buttons.buttons.exposureStop.gpioPin'), app.peripherals.buttons.callbacks.exposureStop);
+						app.peripherals.buttons.buttons.exposureStop = gpioButton.build(
+							'exposureStop',
+							app.config.get('peripherals.buttons.buttons.exposureStop.gpioPin'),
+							app.peripherals.buttons.callbacks.exposureStop,
+							app.peripherals.buttons.callbacks.exposureStopHold,
+							app.peripherals.buttons.callbacks.exposureStopHoldRelease
+						);
 						app.logger.info('buttons initialized');
 						resolve('buttons initialized');
 					});
@@ -455,7 +478,30 @@ var app = {
 				exposureStop: function(){
 					app.logger.debug('app.peripherals.buttons.callbacks.exposureStop()');
 					app.peripherals.buttons.callbacks._click();
-					app.tasks.settings.enable();
+					if(app.tasks._currentTask == 'exposure'){
+						app.tasks.settings.enable();
+					}
+				},
+				_exposureStopHoldStarted: false,
+				_exposureStopHoldClearInverval: null,
+				exposureStopHold: function(){
+					app.logger.debug('app.peripherals.buttons.callbacks.exposureStopHold()');
+					app.peripherals.buttons.callbacks._click();
+					if(app.tasks._currentTask == 'settings'){
+						if(app.peripherals.buttons.buttons.exposureStop.isHeld()){
+							clearTimeout(app.peripherals.buttons.callbacks._exposureStopHoldClearInverval);
+							app.peripherals.buttons.callbacks._exposureStopHoldClearInverval = setTimeout(function(){
+								// exposureStopHold hold release
+								app.tasks.settings.relayOverride.disable();
+								app.peripherals.buttons.callbacks._exposureStopHoldStarted = false;
+							}, 250);
+							if(false === app.peripherals.buttons.callbacks._exposureStopHoldStarted){
+								// exposureStopHold intial hold
+								app.tasks.settings.relayOverride.enable();
+								app.peripherals.buttons.callbacks._exposureStopHoldStarted = true;
+							}
+						}
+					}
 				},
 			}
 		},
