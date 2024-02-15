@@ -29,7 +29,7 @@ CONFIG_CHECK_APT_UPDATES=0
 
 #####Advanced Options
 ```dietpi-config```
-I2C Frequency:	10kHz
+I2C Frequency:	100kHz
 
 ## pigpio
 
