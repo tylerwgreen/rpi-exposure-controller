@@ -17,11 +17,11 @@ cache:
     id: cache.json
 tasks:
     settings:
-        lcdInterval: 1000 # milliseconds
+        lcdInterval: 500 # milliseconds
         exposure:
-            increments: 10000 # uv accumulated per min
-            max: 2000000
-            min: 10000
+            increments: 100000 # uv accumulated per min
+            max: 10000000
+            min: 100000
     exposure:
         lcdInterval: 250 # milliseconds
         buzzIncrement: 50000 # uv accumulated per min
@@ -77,4 +77,4 @@ peripherals:
             bus:
                 number: 1
                 address: 0x10
-            readIntervalMs: 250
+            readIntervalMs: 100
