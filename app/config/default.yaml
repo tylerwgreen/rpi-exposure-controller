@@ -12,7 +12,7 @@ logger:
     fileLoggingLevel: error
     consoleLogging: true
     consoleLoggingLevel: info
-    # consoleLoggingLevel: silly
+    # consoleLoggingLevel: debug
 cache:
     id: cache.json
 tasks:
