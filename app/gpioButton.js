@@ -24,6 +24,7 @@ var gpioButton = {
 			_enabled: false,
 			_gpioPin: gpioPin,
 			_holdInterval: null,
+			_isHeld: false,
 			_button: new Gpio(gpioPin, {
 				mode: Gpio.INPUT,
 				pullUpDown: Gpio.PUD_UP,
@@ -48,6 +49,7 @@ var gpioButton = {
 					button.holdRelease();
 				}else{
 					callbackHold();
+					button._isHeld = true;
 					clearInterval(button._holdInterval);
 					button._holdInterval = setInterval(function(){
 						callbackHold();
@@ -56,7 +58,12 @@ var gpioButton = {
 			},
 			holdRelease: function(){
 				gpioButton._logger.debug('gpioButton ' + button.name + ' button.holdRelease()');
+				button._isHeld = false;
 				clearInterval(button._holdInterval);
+			},
+			isHeld: function(){
+				gpioButton._logger.debug('gpioButton ' + button.name + ' button.isHeld()');
+				return button._isHeld;
 			},
 		};
 		// Level must be stable for xx ms before an alert event is emitted
