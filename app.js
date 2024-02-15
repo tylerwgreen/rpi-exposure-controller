@@ -302,6 +302,7 @@ var app = {
 							}
 							// check if UV data reading becomes innacurate
 							if(data.uva.read <= 0){
+								app.logger.warn('No UVA reading warning ' + uvLostI);
 								if(uvLostI >= app.config.get('tasks.exposure.maxMissingUVReadings')){
 									app.logger.error('Lost UVA reading');
 									app.tasks.settings.enable();
