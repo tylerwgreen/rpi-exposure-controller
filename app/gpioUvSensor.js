@@ -64,29 +64,30 @@ var gpioUvSensor = {
 		.then(word => {
 			gpioUvSensor._readings.uva = word;
 		}).catch(err => {
-			gpioUvSensor._logger.warn('uva read error', err);
+			gpioUvSensor._logger.verbose('uva read error', err);
 		});
 		// Uncalibrated UVB
 		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x09)
 		.then(word => {
 			gpioUvSensor._readings.uvb = word;
 		}).catch(err => {
-			gpioUvSensor._logger.warn('uvb read error', err);
+			gpioUvSensor._logger.verbose('uvb read error', err);
 		});
 		// UV compensation value 1
 		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x0a)
 		.then(word => {
 			gpioUvSensor._readings.uvcomp1 = word;
 		}).catch(err => {
-			gpioUvSensor._logger.warn('uvcomp1 read error', err);
+			gpioUvSensor._logger.verbose('uvcomp1 read error', err);
 		});
 		// UV compensation value 2
 		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x0b)
 		.then(word => {
 			gpioUvSensor._readings.uvcomp2 = word;
 		}).catch(err => {
-			gpioUvSensor._logger.warn('uvcomp2 read error', err);
+			gpioUvSensor._logger.verbose('uvcomp2 read error', err);
 		});
+		gpioUvSensor._logger.debug(JSON.stringify(gpioUvSensor._readings));
 		// adusted uva/uvb
 		var uvaAdjusted = Math.round(gpioUvSensor._readings.uva - (uva_a_coef * gpioUvSensor._readings.uvcomp1) - (uva_b_coef * gpioUvSensor._readings.uvcomp2));
 		var uvbAdjusted = Math.round(gpioUvSensor._readings.uvb - (uvb_c_coef * gpioUvSensor._readings.uvcomp1) - (uvb_d_coef * gpioUvSensor._readings.uvcomp2));

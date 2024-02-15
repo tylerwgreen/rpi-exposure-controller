@@ -11,8 +11,8 @@ logger:
     fileLogging: true
     fileLoggingLevel: error
     consoleLogging: true
-    consoleLoggingLevel: info
-    # consoleLoggingLevel: debug
+    # consoleLoggingLevel: info
+    consoleLoggingLevel: debug
 cache:
     id: cache.json
 tasks:
@@ -25,6 +25,7 @@ tasks:
     exposure:
         lcdInterval: 250 # milliseconds
         buzzIncrement: 50000 # uv accumulated per min
+        maxMissingUVReadings: 10 # will stop exposure if xx UV readings are missed
 peripherals:
     lcdScreen:
         config:
@@ -77,4 +78,4 @@ peripherals:
             bus:
                 number: 1
                 address: 0x10
-            readIntervalMs: 100
+            readIntervalMs: 250
