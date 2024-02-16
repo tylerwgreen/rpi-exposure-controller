@@ -7,16 +7,12 @@ var gpioUvSensor = {
 	_bus: null,
 	_busNumber: null,
 	_busAddress: null,
-	_readings: {
-		uva: null,
-		uvb: null,
-		uvcomp1: null,
-		uvcomp2: null,
-	},
+	_integrationTimeMs: null,
 	init: function(logger, config){
 		gpioUvSensor._lowLightDebug = config.lowLightDebug;
 		gpioUvSensor._busNumber = config.bus.number;
 		gpioUvSensor._busAddress = config.bus.address;
+		gpioUvSensor._integrationTimeMs = config.integrationTimeMs;
 		gpioUvSensor._logger = logger.getLogger('gpioUvSensor', config.consoleLoggingLevel);
 		gpioUvSensor._logger.debug('gpioUvSensor.init()');
 		gpioUvSensor._logger.verbose('initializing gpioUvSensor');
@@ -29,9 +25,20 @@ var gpioUvSensor = {
 				bus.readWord(gpioUvSensor._busAddress, 0x0c)
 				.then(deviceId => {
 					if((deviceId & 0xff) == 0x26){
+						// determine comand code for specified integrationTimeMs
+						var integrationTimeCommandCode = null;
+						switch(gpioUvSensor._integrationTimeMs){
+							case 50:	integrationTimeCommandCode = 0b00000000;	break;
+							case 100:	integrationTimeCommandCode = 0b00010000;	break;
+							case 200:	integrationTimeCommandCode = 0b00100000;	break;
+							case 400:	integrationTimeCommandCode = 0b00110000;	break;
+							case 800:	integrationTimeCommandCode = 0b01000000;	break;
+							default:
+								reject('Bad _integrationTimeMs: ' + gpioUvSensor._integrationTimeMs);
+						}
 						// Configure the device...
 						bus.writeByte(gpioUvSensor._busAddress, 0x00, 0b00000001) // Power off ("shut down")
-						.then(bus.writeByte(gpioUvSensor._busAddress, 0x00, 0b00000000)) // Power on, normal (continuous) mode, 50 ms integration time, normal dynamic range
+						.then(bus.writeByte(gpioUvSensor._busAddress, 0x00, integrationTimeCommandCode)) // Power on, normal (continuous) mode, normal dynamic range
 						.then(result => {
 							gpioUvSensor._bus = bus;
 							gpioUvSensor.exposure._tick.init(config.readIntervalMs);
@@ -49,6 +56,13 @@ var gpioUvSensor = {
 			});
 		});
 	},
+	_sensorReadings: {
+		uva: null,
+		uvb: null,
+		uvcomp1: null,
+		uvcomp2: null,
+	},
+	/** Because the i2c reading is promisified, function calls are not exactly from the time of the call */
 	get: function(){
 		gpioUvSensor._logger.silly('gpioUvSensor.get()');
 		// VIS and IR coefficients for a non-covered (i.e. open-air, non-diffused -> no glass or teflon filter) designs like the Adafruit breakout, as per the VEML6075 datasheet:
@@ -58,41 +72,44 @@ var gpioUvSensor = {
 		var uvb_d_coef = 1.74; // Default value for the UVB IR coefficient ("d")
 		var uva_resp = 0.001461; // UVA response
 		var uvb_resp = 0.002591; // UVB response
-		// read data
-		// Uncalibrated UVA
-		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x07)
-		.then(word => {
-			gpioUvSensor._readings.uva = word;
+		// read data (read errors are reduced when there is less traffic on the i2c bus ie: less writes to the LCD means better uv read stability)
+		// Uncalibrated UVA (peak sensitivity at 365 nm, in a range of about 350 nm to 375 nm)
+		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x07).then(word => {
+			if(word >= 0)
+				gpioUvSensor._sensorReadings.uva = word;
 		}).catch(err => {
 			gpioUvSensor._logger.verbose('uva read error', err);
 		});
-		// Uncalibrated UVB
-		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x09)
-		.then(word => {
-			gpioUvSensor._readings.uvb = word;
+		// Uncalibrated UVB (peak sensitivity at 330 nm, in a range of about 315 nm to 340 nm)
+		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x09).then(word => {
+			if(word >= 0)
+				gpioUvSensor._sensorReadings.uvb = word;
 		}).catch(err => {
 			gpioUvSensor._logger.verbose('uvb read error', err);
 		});
-		// UV compensation value 1
-		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x0a)
-		.then(word => {
-			gpioUvSensor._readings.uvcomp1 = word;
+		// UV compensation value 1 (peak sensitivity at about 450 nm)
+		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x0a).then(word => {
+			if(word >= 0)
+				gpioUvSensor._sensorReadings.uvcomp1 = word;
 		}).catch(err => {
 			gpioUvSensor._logger.verbose('uvcomp1 read error', err);
 		});
-		// UV compensation value 2
-		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x0b)
-		.then(word => {
-			gpioUvSensor._readings.uvcomp2 = word;
+		// UV compensation value 2 (peak sensitivity at about 510 nm)
+		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x0b).then(word => {
+			if(word >= 0)
+				gpioUvSensor._sensorReadings.uvcomp2 = word;
 		}).catch(err => {
 			gpioUvSensor._logger.verbose('uvcomp2 read error', err);
 		});
-		gpioUvSensor._logger.debug(JSON.stringify(gpioUvSensor._readings));
-		// adusted uva/uvb
-		var uvaAdjusted = Math.round(gpioUvSensor._readings.uva - (uva_a_coef * gpioUvSensor._readings.uvcomp1) - (uva_b_coef * gpioUvSensor._readings.uvcomp2));
-		var uvbAdjusted = Math.round(gpioUvSensor._readings.uvb - (uvb_c_coef * gpioUvSensor._readings.uvcomp1) - (uvb_d_coef * gpioUvSensor._readings.uvcomp2));
-		// uv index
-		var uvIndex = ((uvaAdjusted * uva_resp) + (uvbAdjusted * uvb_resp)) / 2;
+		// adusted uva/uvb (for light outside the UVa/UVb spectrums, UVcomp1 and UVcomp2 should be low under LEDs)
+		var uvaAdjusted = Math.round(gpioUvSensor._sensorReadings.uva - (uva_a_coef * gpioUvSensor._sensorReadings.uvcomp1) - (uva_b_coef * gpioUvSensor._sensorReadings.uvcomp2));
+		var uvbAdjusted = Math.round(gpioUvSensor._sensorReadings.uvb - (uvb_c_coef * gpioUvSensor._sensorReadings.uvcomp1) - (uvb_d_coef * gpioUvSensor._sensorReadings.uvcomp2));
+		// uv index (if uvb is less than 10% of uva, it is likely the sensor is reading 365nm LEDs [overcast outside light readings indicated adjusted UVb is about 20% less than adjusted UVa])
+		if(uvbAdjusted < uvaAdjusted / 10){
+			var uvIndex = +(uvaAdjusted * uva_resp).toFixed(2);
+		}else{
+			var uvIndex = +(((uvaAdjusted * uva_resp) + (uvbAdjusted * uvb_resp)) / 2).toFixed(2);
+		}
 		if(uvIndex < 0){
 			uvIndex = 0;
 		}
@@ -122,6 +139,8 @@ var gpioUvSensor = {
 			uvIndexLevel: uvIndexLevel,
 			uvIndexText: uvIndexLevelText
 		};
+// gpioUvSensor._logger.verbose(JSON.stringify({'readings': gpioUvSensor._sensorReadings, 'adjusted': data}));
+gpioUvSensor._logger.verbose(JSON.stringify({'uva': gpioUvSensor._sensorReadings.uva, 'adjusted': data.uva}));
 		return data;
 	},
 	stop: function(callback){
@@ -178,35 +197,22 @@ var gpioUvSensor = {
 				gpioUvSensor._logger.silly('gpioUvSensor.exposure._tick.update()');
 				data = gpioUvSensor.get();
 				// uv index
-				gpioUvSensor.exposure._data.uvIndex.index = data.uvIndex.toFixed(2);
+				gpioUvSensor.exposure._data.uvIndex.index = data.uvIndex;
 				gpioUvSensor.exposure._data.uvIndex.level = data.uvIndexLevel;
 				gpioUvSensor.exposure._data.uvIndex.text = data.uvIndexText;
 				// elapsed time
-				gpioUvSensor.exposure._data.elapsedMs = gpioUvSensor.exposure._data.elapsedMs += gpioUvSensor.exposure._tick.intervalMs;
+				gpioUvSensor.exposure._data.elapsedMs += gpioUvSensor.exposure._tick.intervalMs;
 				gpioUvSensor.exposure._data.elapsedSec = Math.floor(gpioUvSensor.exposure._data.elapsedMs / 1000);
 				gpioUvSensor.exposure._data.elapsedMin = Math.floor(gpioUvSensor.exposure._data.elapsedSec / 60);
 				// uva
-				if(data.uva < 0){
-					if(gpioUvSensor._lowLightDebug){
-						data.uva = data.uva * -120;
-					}else{
-						data.uva = 0;
-					}
-				}
 				gpioUvSensor.exposure._data.uva.read = data.uva;
-				gpioUvSensor.exposure._data.uva.readPerMin = data.uva * ((60 * 1000) / gpioUvSensor.exposure._tick.intervalMs);
-				gpioUvSensor.exposure._data.uva.accumulated = gpioUvSensor.exposure._data.uva.accumulated + data.uva;
+				gpioUvSensor.exposure._data.uva.readPerMin = (data.uva / gpioUvSensor._integrationTimeMs) * 1000 * 60;
+				gpioUvSensor.exposure._data.uva.accumulated += (data.uva / gpioUvSensor._integrationTimeMs) * gpioUvSensor.exposure._tick.intervalMs;
 				// uvb
-				if(data.uvb < 0){
-					if(gpioUvSensor._lowLightDebug){
-						data.uvb = data.uvb * -40;
-					}else{
-						data.uvb = 0;
-					}
-				}
 				gpioUvSensor.exposure._data.uvb.read = data.uvb;
-				gpioUvSensor.exposure._data.uvb.readPerMin = data.uvb * ((60 * 1000) / gpioUvSensor.exposure._tick.intervalMs);
-				gpioUvSensor.exposure._data.uvb.accumulated = gpioUvSensor.exposure._data.uvb.accumulated + data.uvb;
+				gpioUvSensor.exposure._data.uvb.readPerMin = (data.uvb / gpioUvSensor._integrationTimeMs) * 1000 * 60;
+				gpioUvSensor.exposure._data.uvb.accumulated += (data.uvb / gpioUvSensor._integrationTimeMs) * gpioUvSensor.exposure._tick.intervalMs;
+// gpioUvSensor._logger.verbose(JSON.stringify(gpioUvSensor.exposure._data));
 			},
 		},
 		reset: function(){
