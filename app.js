@@ -232,11 +232,13 @@ var app = {
 			relayOverride: {
 				enable: function(){
 					app.logger.debug('app.tasks.settings.relayOverride.enable()');
+					app.peripherals.uvSensor.exposure.reset();
 					app.peripherals.relays.relays.relayA.on();
 					app.peripherals.relays.relays.relayB.on();
 				},
 				disable: function(){
 					app.logger.debug('app.tasks.settings.relayOverride.disable()');
+					app.peripherals.uvSensor.exposure.reset();
 					app.peripherals.relays.relays.relayA.off();
 					app.peripherals.relays.relays.relayB.off();
 				}
@@ -311,7 +313,7 @@ var app = {
 								uvLostI = 0;
 							}
 						}
-					}, app.config.get('peripherals.uvSensor.config.readIntervalMs') + 100);
+					}, app.config.get('peripherals.uvSensor.config.readIntervalMs'));
 				}, 1000); // needs time for the transformer to warm up and stabilize current
 			},
 			disable: function(){
