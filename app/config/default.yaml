@@ -12,7 +12,7 @@ logger:
     fileLoggingLevel: error
     consoleLogging: true
     # consoleLoggingLevel: info
-    consoleLoggingLevel: debug
+    consoleLoggingLevel: verbose
 cache:
     id: cache.json
 tasks:
@@ -78,4 +78,4 @@ peripherals:
             bus:
                 number: 1
                 address: 0x10
-            readIntervalMs: 250
+            readIntervalMs: 100
