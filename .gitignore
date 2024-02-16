@@ -2,4 +2,3 @@
 node_modules
 var
 package-lock.json
-app/cache/cache.json
