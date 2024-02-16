@@ -81,12 +81,11 @@ var app = {
 			app.peripherals.lcdScreen.update.top('Welcome!')
 			.then(app.peripherals.lcdScreen.update.bottom(app.date.getDate()))
 			.then(result => {
-				var i = 3;
+				var i = 2;
+				app.peripherals.leds.leds.ledGreen.on();
 				var interval = setInterval(function(){
 					// animate leds while waiting for CPU to calm down
-					if(i == 3){
-						app.peripherals.leds.leds.ledGreen.on();
-					}else if(i == 2){
+					if(i == 2){
 						app.peripherals.leds.leds.ledYellow.on();
 					}else if(i == 1){
 						app.peripherals.leds.leds.ledRed.on();
@@ -99,7 +98,7 @@ var app = {
 						app.tasks.settings.enable();
 					}
 					i--;
-				}, 600);
+				}, 500);
 			});
 		},
 		disableAll: function(){
