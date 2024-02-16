@@ -17,14 +17,14 @@ cache:
     id: cache.json
 tasks:
     settings:
-        lcdInterval: 500 # milliseconds
+        lcdInterval: 250 # milliseconds
         exposure:
             increments: 100000 # uv accumulated per min
             max: 10000000
             min: 100000
     exposure:
         lcdInterval: 250 # milliseconds
-        buzzIncrement: 50000 # uv accumulated per min
+        buzzIncrement: 200000 # uv accumulated per min
         maxMissingUVReadings: 10 # will stop exposure if xx UV readings are missed
 peripherals:
     lcdScreen:
@@ -73,9 +73,10 @@ peripherals:
                 gpioPin: 15
     uvSensor:
         config:
-            lowLightDebug: false # configures uvSensor to read low levels of UV from indoor uv lights
             consoleLoggingLevel: debug
             bus:
                 number: 1
                 address: 0x10
-            readIntervalMs: 100
+            readIntervalMs: 250
+            # 50, 100, 200, 400, 800
+            integrationTimeMs: 100
