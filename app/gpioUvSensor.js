@@ -8,6 +8,12 @@ var gpioUvSensor = {
 	_busNumber: null,
 	_busAddress: null,
 	_integrationTimeMs: null,
+	_sensorReadings: {
+		uva: null,
+		uvb: null,
+		uvcomp1: null,
+		uvcomp2: null,
+	},
 	init: function(logger, config){
 		gpioUvSensor._lowLightDebug = config.lowLightDebug;
 		gpioUvSensor._busNumber = config.bus.number;
@@ -25,14 +31,15 @@ var gpioUvSensor = {
 				bus.readWord(gpioUvSensor._busAddress, 0x0c)
 				.then(deviceId => {
 					if((deviceId & 0xff) == 0x26){
-						// determine comand code for specified integrationTimeMs
+						// determine comand code for specified integrationTimeMs [Longer Integration Time: Ideal for situations where the light levels are low or the signal is weak. Provides better sensitivity by allowing more time to accumulate photons, leading to a higher SNR. Suitable for applications where precision and accuracy are more critical than speed.]
+						// bit 3 (HD Setting) is set to 1 for High Dynamic setting [Higher Bit Depth (HD Bit): A higher bit depth allows for a wider dynamic range, enabling the photodiode to capture a broader range of light intensities with greater precision. This is important in applications where the light levels vary significantly, as it ensures that both dim and bright signals can be accurately detected and quantified.]
 						var integrationTimeCommandCode = null;
 						switch(gpioUvSensor._integrationTimeMs){
-							case 50:	integrationTimeCommandCode = 0b00000000;	break;
-							case 100:	integrationTimeCommandCode = 0b00010000;	break;
-							case 200:	integrationTimeCommandCode = 0b00100000;	break;
-							case 400:	integrationTimeCommandCode = 0b00110000;	break;
-							case 800:	integrationTimeCommandCode = 0b01000000;	break;
+							case 50:	integrationTimeCommandCode = 0b00001000;	break;
+							case 100:	integrationTimeCommandCode = 0b00011000;	break;
+							case 200:	integrationTimeCommandCode = 0b00101000;	break;
+							case 400:	integrationTimeCommandCode = 0b00111000;	break;
+							case 800:	integrationTimeCommandCode = 0b01001000;	break;
 							default:
 								reject('Bad _integrationTimeMs: ' + gpioUvSensor._integrationTimeMs);
 						}
@@ -41,7 +48,7 @@ var gpioUvSensor = {
 						.then(bus.writeByte(gpioUvSensor._busAddress, 0x00, integrationTimeCommandCode)) // Power on, normal (continuous) mode, normal dynamic range
 						.then(result => {
 							gpioUvSensor._bus = bus;
-							gpioUvSensor.exposure._tick.init(config.readIntervalMs);
+							gpioUvSensor.exposure._tick.init(gpioUvSensor._integrationTimeMs);
 							var msg = 'gpioUvSensor initialized';
 							gpioUvSensor._logger.debug(msg);
 							resolve(msg);
@@ -56,22 +63,9 @@ var gpioUvSensor = {
 			});
 		});
 	},
-	_sensorReadings: {
-		uva: null,
-		uvb: null,
-		uvcomp1: null,
-		uvcomp2: null,
-	},
-	/** Because the i2c reading is promisified, function calls are not exactly from the time of the call */
+	/** Because the i2c reading is promisified, data readings from get() are not exact to time of function call */
 	get: function(){
 		gpioUvSensor._logger.silly('gpioUvSensor.get()');
-		// VIS and IR coefficients for a non-covered (i.e. open-air, non-diffused -> no glass or teflon filter) designs like the Adafruit breakout, as per the VEML6075 datasheet:
-		var uva_a_coef = 2.22; // Default value for the UVA VIS coefficient ("a")
-		var uva_b_coef = 1.33; // Default value for the UVA IR coefficient ("b")
-		var uvb_c_coef = 2.95; // Default value for the UVB VIS coefficient ("c")
-		var uvb_d_coef = 1.74; // Default value for the UVB IR coefficient ("d")
-		var uva_resp = 0.001461; // UVA response
-		var uvb_resp = 0.002591; // UVB response
 		// read data (read errors are reduced when there is less traffic on the i2c bus ie: less writes to the LCD means better uv read stability)
 		// Uncalibrated UVA (peak sensitivity at 365 nm, in a range of about 350 nm to 375 nm)
 		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x07).then(word => {
@@ -87,21 +81,31 @@ var gpioUvSensor = {
 		}).catch(err => {
 			gpioUvSensor._logger.verbose('uvb read error', err);
 		});
-		// UV compensation value 1 (peak sensitivity at about 450 nm)
+		// UV compensation value 1 (peak sensitivity at about 450 nm) [information about the whole received light within the visible wavelength area, allows only visible noise to pass through]
 		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x0a).then(word => {
 			if(word >= 0)
 				gpioUvSensor._sensorReadings.uvcomp1 = word;
 		}).catch(err => {
 			gpioUvSensor._logger.verbose('uvcomp1 read error', err);
 		});
-		// UV compensation value 2 (peak sensitivity at about 510 nm)
+		// UV compensation value 2 (peak sensitivity at about 510 nm) [strength of the infrared content within the received light, allows only infrared noise to pass through]
 		gpioUvSensor._bus.readWord(gpioUvSensor._busAddress, 0x0b).then(word => {
 			if(word >= 0)
 				gpioUvSensor._sensorReadings.uvcomp2 = word;
 		}).catch(err => {
 			gpioUvSensor._logger.verbose('uvcomp2 read error', err);
 		});
-		// adusted uva/uvb (for light outside the UVa/UVb spectrums, UVcomp1 and UVcomp2 should be low under LEDs)
+		// VIS and IR coefficients for a non-covered (i.e. open-air, non-diffused -> no glass or teflon filter) designs like the Adafruit breakout, as per the VEML6075 datasheet:
+		var uva_a_coef = 2.22; // Default value for the UVA VIS coefficient ("a")
+		var uva_b_coef = 1.33; // Default value for the UVA IR coefficient ("b")
+		var uvb_c_coef = 2.95; // Default value for the UVB VIS coefficient ("c")
+		var uvb_d_coef = 1.74; // Default value for the UVB IR coefficient ("d")
+		var uva_resp = 0.001461; // UVA responsivity
+		var uvb_resp = 0.002591; // UVB responsivity
+		// correct responsivity for _integrationTimeMs (it is most likely that the default 50ms Integration Time was used to calculate the UVA & UVB responsivity)
+		uva_resp = uva_resp / (gpioUvSensor._integrationTimeMs / 50);
+		uvb_resp = uva_resp / (gpioUvSensor._integrationTimeMs / 50);
+		// adusted uva/uvb (for light outside the UVa/UVb spectrums, UVcomp1 and UVcomp2 should be low under LEDs) [These gain calibration factors, α, β, γ, δ, correct the output ratios of each channel for the device under test (DUT) in reference to the golden sample under a solar simulator, such as the Newport LCS100.]
 		var uvaAdjusted = Math.round(gpioUvSensor._sensorReadings.uva - (uva_a_coef * gpioUvSensor._sensorReadings.uvcomp1) - (uva_b_coef * gpioUvSensor._sensorReadings.uvcomp2));
 		var uvbAdjusted = Math.round(gpioUvSensor._sensorReadings.uvb - (uvb_c_coef * gpioUvSensor._sensorReadings.uvcomp1) - (uvb_d_coef * gpioUvSensor._sensorReadings.uvcomp2));
 		// uv index (if uvb is less than 10% of uva, it is likely the sensor is reading 365nm LEDs [overcast outside light readings indicated adjusted UVb is about 20% less than adjusted UVa])
@@ -140,7 +144,6 @@ var gpioUvSensor = {
 			uvIndexText: uvIndexLevelText
 		};
 // gpioUvSensor._logger.verbose(JSON.stringify({'readings': gpioUvSensor._sensorReadings, 'adjusted': data}));
-gpioUvSensor._logger.verbose(JSON.stringify({'uva': gpioUvSensor._sensorReadings.uva, 'adjusted': data.uva}));
 		return data;
 	},
 	stop: function(callback){
@@ -212,7 +215,7 @@ gpioUvSensor._logger.verbose(JSON.stringify({'uva': gpioUvSensor._sensorReadings
 				gpioUvSensor.exposure._data.uvb.read = data.uvb;
 				gpioUvSensor.exposure._data.uvb.readPerMin = (data.uvb / gpioUvSensor._integrationTimeMs) * 1000 * 60;
 				gpioUvSensor.exposure._data.uvb.accumulated += (data.uvb / gpioUvSensor._integrationTimeMs) * gpioUvSensor.exposure._tick.intervalMs;
-// gpioUvSensor._logger.verbose(JSON.stringify(gpioUvSensor.exposure._data));
+gpioUvSensor._logger.verbose(JSON.stringify(gpioUvSensor.exposure._data));
 			},
 		},
 		reset: function(){
