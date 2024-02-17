@@ -264,57 +264,48 @@ var app = {
 				app.peripherals.leds.leds.ledYellow.flash();
 				app.tasks.exposure._lcd.wait();
 				app.tasks._currentTask = 'exposure';
-				// wait for UV light to turn on
-				setTimeout(function(){
-					app.peripherals.leds.leds.ledYellow.off();
+				app.peripherals.leds.leds.ledYellow.off();
+				app.tasks.exposure._lcd.enable();
+				app.peripherals.leds.leds.ledRed.off();
+				app.peripherals.leds.leds.ledGreen.flash();
+				app.peripherals.buttons.buttons.exposureStop.enable();
+				var data = app.peripherals.uvSensor.exposure.get();
+				var maxExp = app.cache.exposure.get();
+				var uvLostI = 0;
+				var previousUvAccumulated = 0;
+				var halfUvAccumulatedBuzz = true;
+				// check the UV exposure amount
+				app.tasks.exposure._exposureInterval = setInterval(function(){
 					var data = app.peripherals.uvSensor.exposure.get();
-					// this is the initial power on, verify UVA is being read
-					if(data.uva.read <= 0){
-						app.logger.warn('No UVA reading');
+					// console.log(data.uva.accumulated + '|' + maxExp);
+					if(data.uva.accumulated >= maxExp){
 						app.tasks.settings.enable();
-						return;
-					}
-					app.tasks.exposure._lcd.enable();
-					app.peripherals.leds.leds.ledRed.off();
-					app.peripherals.leds.leds.ledGreen.flash();
-					app.peripherals.buttons.buttons.exposureStop.enable();
-					var maxExp = app.cache.exposure.get();
-					var uvLostI = 0;
-					var previousUvAccumulated = 0;
-					var halfUvAccumulatedBuzz = true;
-					// check the UV exposure amount
-					app.tasks.exposure._exposureInterval = setInterval(function(){
-						var data = app.peripherals.uvSensor.exposure.get();
-						// console.log(data.uva.accumulated + '|' + maxExp);
-						if(data.uva.accumulated >= maxExp){
-							app.tasks.settings.enable();
-						}else{
-							// buzz at interval
-							if(data.uva.accumulated - previousUvAccumulated >= app.config.get('tasks.exposure.buzzIncrement')){
-								app.peripherals.buzzer.buzzLong();
-								previousUvAccumulated = data.uva.accumulated;
-								halfUvAccumulatedBuzz = true;
-							}else if(
-									(data.uva.accumulated - previousUvAccumulated >= (app.config.get('tasks.exposure.buzzIncrement') / 2))
-								&&	true === halfUvAccumulatedBuzz
-							){
-								halfUvAccumulatedBuzz = false;
-								app.peripherals.buzzer.buzz();
-							}
-							// check if UV data reading becomes innacurate
-							if(data.uva.read <= 0){
-								app.logger.warn('No UVA reading warning ' + uvLostI);
-								if(uvLostI >= app.config.get('tasks.exposure.maxMissingUVReadings')){
-									app.logger.error('Lost UVA reading');
-									app.tasks.settings.enable();
-								}
-								uvLostI++;
-							}else{
-								uvLostI = 0;
-							}
+					}else{
+						// buzz at interval
+						if(data.uva.accumulated - previousUvAccumulated >= app.config.get('tasks.exposure.buzzIncrement')){
+							app.peripherals.buzzer.buzzLong();
+							previousUvAccumulated = data.uva.accumulated;
+							halfUvAccumulatedBuzz = true;
+						}else if(
+								(data.uva.accumulated - previousUvAccumulated >= (app.config.get('tasks.exposure.buzzIncrement') / 2))
+							&&	true === halfUvAccumulatedBuzz
+						){
+							halfUvAccumulatedBuzz = false;
+							app.peripherals.buzzer.buzz();
 						}
-					}, app.config.get('peripherals.uvSensor.config.readIntervalMs'));
-				}, 1000); // needs time for the transformer to warm up and stabilize current
+						// check if UV data reading becomes innacurate
+						if(data.uva.read <= 0){
+							app.logger.warn('No UVA reading warning ' + uvLostI);
+							if(uvLostI >= app.config.get('tasks.exposure.maxMissingUVReadings')){
+								app.logger.error('Lost UVA reading');
+								app.tasks.settings.enable();
+							}
+							uvLostI++;
+						}else{
+							uvLostI = 0;
+						}
+					}
+				}, app.config.get('peripherals.uvSensor.config.integrationTimeMs'));
 			},
 			disable: function(){
 				app.logger.debug('app.tasks.exposure.disable()');
