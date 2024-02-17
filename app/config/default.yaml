@@ -74,6 +74,7 @@ peripherals:
     uvSensor:
         config:
             consoleLoggingLevel: debug
+            logReadingsToConsole: false
             bus:
                 number: 1
                 address: 0x10
