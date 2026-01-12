@@ -1,0 +1,11 @@
+28.8 watts / meter @ 5 meters = 144 watts
+
+122 watts @ 12 volts = 10,166 mA
+
+When LED Strip Lights with High power 14.4w/m or more, working temperature is high after lighting. Please make sure the LED strips work with aluminum profile, heat sink and other auxiliary heat dissipation.
+
+led aluminum channel heatsink
+
+https://www.superlightingled.com/recessed-led-strip-channel-aluminum-profile-for-10mm-addressable-led-strips-p-4730.html
+
+https://www.flexfireleds.com/aluminum-mounting-channels/
