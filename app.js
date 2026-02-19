@@ -209,7 +209,15 @@ var app = {
 				up: function(){
 					app.logger.debug('app.tasks.settings.exposure.up()');
 					var exposure = app.cache.exposure.get();
-					exposure = exposure + app.config.get('tasks.settings.exposure.increments');
+					if(exposure >= 1000000){
+						exposure = exposure + 100000;
+					}else if(exposure >= 100000){
+						exposure = exposure + 10000;
+					}else if(exposure >= 10000){
+						exposure = exposure + 1000;
+					}else{
+						exposure = exposure + 100;
+					}
 					if(exposure > app.config.get('tasks.settings.exposure.max')){
 						app.peripherals.buzzer.buzzLong();
 					}else{
@@ -220,7 +228,15 @@ var app = {
 				down: function(){
 					app.logger.debug('app.tasks.settings.exposure.down()');
 					var exposure = app.cache.exposure.get();
-					exposure = exposure - app.config.get('tasks.settings.exposure.increments');
+					if(exposure >= 1000000){
+						exposure = exposure - 100000;
+					}else if(exposure >= 100000){
+						exposure = exposure - 10000;
+					}else if(exposure >= 10000){
+						exposure = exposure - 1000;
+					}else{
+						exposure = exposure - 100;
+					}
 					if(exposure < app.config.get('tasks.settings.exposure.min')){
 						app.peripherals.buzzer.buzzLong();
 					}else{
