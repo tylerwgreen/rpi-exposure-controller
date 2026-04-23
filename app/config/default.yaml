@@ -24,7 +24,8 @@ tasks:
     exposure:
         lcdInterval: 50 # milliseconds
         buzzIncrement: 50000 # uv accumulated per min
-        maxMissingUVReadings: 15 # will stop exposure if xx UV readings are missed
+        preExposureUVReadings: 10 # counts
+        maxMissingUVReadings: 5 # counts, will log error if xx UV readings are missed
 peripherals:
     lcdScreen:
         config:

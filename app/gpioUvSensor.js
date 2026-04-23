@@ -168,10 +168,12 @@ var gpioUvSensor = {
 			elapsedMin: 0,
 			uva: {
 				read: 0,
+				readPrevious: 0,
 				accumulated: 0,
 			},
 			uvb: {
 				read: 0,
+				readPrevious: 0,
 				accumulated: 0,
 			},
 			uvIndex: {
@@ -210,11 +212,23 @@ var gpioUvSensor = {
 				gpioUvSensor.exposure._data.elapsedSec = Math.floor(gpioUvSensor.exposure._data.elapsedMs / 1000);
 				gpioUvSensor.exposure._data.elapsedMin = Math.floor((gpioUvSensor.exposure._data.elapsedMs / 1000) / 60);
 				// uva
-				gpioUvSensor.exposure._data.uva.read = data.uva < 0 ? 0 : data.uva;
+				if(data.uva < 0){
+					// unlikely UV LEDs turned off, probably a missed sensor/i2c bus reading, use previous reading
+					gpioUvSensor.exposure._data.uva.read = gpioUvSensor.exposure._data.uva.readPrevious;
+				}else{
+					gpioUvSensor.exposure._data.uva.read = data.uva;
+					gpioUvSensor.exposure._data.uva.readPrevious = data.uva;
+				}
 				gpioUvSensor.exposure._data.uva.readPerMin = Math.floor((gpioUvSensor.exposure._data.uva.read / gpioUvSensor._integrationTimeMs) * 1000 * 60);
 				gpioUvSensor.exposure._data.uva.accumulated += gpioUvSensor.exposure._data.uva.read;
 				// uvb
-				gpioUvSensor.exposure._data.uvb.read = data.uvb < 0 ? 0 : data.uvb;
+				if(data.uvb < 0){
+					// unlikely UV LEDs turned off, probably a missed sensor/i2c bus reading, use previous reading
+					gpioUvSensor.exposure._data.uvb.read = gpioUvSensor.exposure._data.uvb.readPrevious;
+				}else{
+					gpioUvSensor.exposure._data.uvb.read = data.uvb;
+					gpioUvSensor.exposure._data.uvb.readPrevious = data.uvb;
+				}
 				gpioUvSensor.exposure._data.uvb.readPerMin = Math.floor((gpioUvSensor.exposure._data.uvb.read / gpioUvSensor._integrationTimeMs) * 1000 * 60);
 				gpioUvSensor.exposure._data.uvb.accumulated += gpioUvSensor.exposure._data.uvb.read;
 				gpioUvSensor.exposure._logDataToConsole();

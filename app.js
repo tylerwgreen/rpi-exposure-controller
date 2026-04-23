@@ -261,6 +261,7 @@ var app = {
 			}
 		},
 		exposure: {
+			_preExposureInterval: null,
 			_exposureInterval: null,
 			init: function(){
 				app.logger.debug('app.tasks.exposure.init()');
@@ -274,18 +275,30 @@ var app = {
 			enable: function(){
 				app.logger.debug('app.tasks.exposure.enable()');
 				app.tasks.disableAll();
-				app.peripherals.relays.relays.relayA.on();
-				app.peripherals.relays.relays.relayB.on();
 				app.peripherals.leds.leds.ledRed.off();
 				app.peripherals.leds.leds.ledYellow.flash();
 				app.tasks.exposure._lcd.wait();
 				app.tasks._currentTask = 'exposure';
+				// preExposure: wait for i2c bus to begin accurate readings
+				var preExposureI = 0;
+				app.tasks.exposure._preExposureInterval = setInterval(function(){
+					if(preExposureI >= app.config.get('tasks.exposure.preExposureUVReadings')){
+						clearInterval(app.tasks.exposure._preExposureInterval);
+						app.tasks.exposure._expose();
+					}
+					preExposureI++;
+				}, app.config.get('peripherals.uvSensor.config.integrationTimeMs'));
+			},
+			_expose: function(){
+				app.logger.debug('app.tasks.exposure._expose()');
+				app.peripherals.relays.relays.relayA.on();
+				app.peripherals.relays.relays.relayB.on();
 				app.peripherals.leds.leds.ledYellow.off();
 				app.tasks.exposure._lcd.enable();
 				app.peripherals.leds.leds.ledRed.off();
 				app.peripherals.leds.leds.ledGreen.flash();
 				app.peripherals.buttons.buttons.exposureStop.enable();
-				var data = app.peripherals.uvSensor.exposure.get();
+				// var data = app.peripherals.uvSensor.exposure.get(); // unnecessary?
 				var maxExp = app.cache.exposure.get();
 				var uvLostI = 0;
 				var previousUvAccumulated = 0;
@@ -313,8 +326,8 @@ var app = {
 						if(data.uva.read <= 0){
 							app.logger.warn('No UVA reading warning ' + uvLostI);
 							if(uvLostI >= app.config.get('tasks.exposure.maxMissingUVReadings')){
-								app.logger.error('Lost UVA reading');
-								app.tasks.settings.enable();
+								app.logger.error('Lost UVA reading ' + uvLostI);
+								// app.tasks.settings.enable(); // too frustrating to have the exposure stop
 							}
 							uvLostI++;
 						}else{
@@ -325,6 +338,7 @@ var app = {
 			},
 			disable: function(){
 				app.logger.debug('app.tasks.exposure.disable()');
+				clearInterval(app.tasks.exposure._preExposureInterval);
 				clearInterval(app.tasks.exposure._exposureInterval);
 				app.tasks.exposure._lcd.disable();
 				app.peripherals.leds.leds.ledGreen.off();
