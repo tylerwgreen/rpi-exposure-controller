@@ -24,8 +24,8 @@ tasks:
     exposure:
         lcdInterval: 50 # milliseconds
         buzzIncrement: 50000 # uv accumulated per min
-        preExposureUVReadings: 10 # counts
-        maxMissingUVReadings: 5 # counts, will log error if xx UV readings are missed
+        preExposureUVReadings: 15 # counts
+        maxMissingUVReadings: 10 # counts, every uvSensor.config.integrationTimeMs (about 500ms for 10 counts) will log error if xx UV readings are missed
 peripherals:
     lcdScreen:
         config:
