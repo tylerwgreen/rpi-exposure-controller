@@ -13,7 +13,7 @@ var app = {
 		// setup logger module
 		app._logger = require('logger');
 		app._logger.init(app.config.get('logger'));
-		app.logger = app._logger.getLogger('app', 'error'); // set log level for the app
+		app.logger = app._logger.getLogger('app', app.config.get('logger.consoleLoggingLevel')); // set log level for the app
 		// initialize app
 		app.logger.debug('app.init()');
 		app.logger.verbose('initializing application');

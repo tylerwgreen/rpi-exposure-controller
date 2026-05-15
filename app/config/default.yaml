@@ -11,8 +11,7 @@ logger:
     fileLogging: true
     fileLoggingLevel: error
     consoleLogging: true
-    consoleLoggingLevel: info
-    # consoleLoggingLevel: verbose
+    consoleLoggingLevel: debug # global and app logging level
 cache:
     id: cache.json
 tasks:
@@ -22,21 +21,21 @@ tasks:
             max: 10000000
             min: 1000
     exposure:
-        lcdInterval: 50 # milliseconds
+        lcdInterval: 1000 # milliseconds
         buzzIncrement: 50000 # uv accumulated per min
-        preExposureUVReadings: 15 # counts
+        preExposureUVReadings: 1 # counts
         maxMissingUVReadings: 10 # counts, every uvSensor.config.integrationTimeMs (about 500ms for 10 counts) will log error if xx UV readings are missed
 peripherals:
     lcdScreen:
         config:
-            consoleLoggingLevel: debug
+            consoleLoggingLevel: error
             lcdType: LCM1602
-    giopReset:
-        config:
-            consoleLoggingLevel: debug
+    # giopReset:
+        # config:
+            # consoleLoggingLevel: error
     buttons:
         config:
-            consoleLoggingLevel: debug
+            consoleLoggingLevel: error
             debounceMs: 500 # milliseconds
             holdDelay: 500 # milliseconds
             holdRepeat: 100 # milliseconds
@@ -51,7 +50,7 @@ peripherals:
                 gpioPin: 4
     leds:
         config:
-            consoleLoggingLevel: debug
+            consoleLoggingLevel: error
         leds:
             ledGreen:
                 gpioPin: 16
@@ -61,11 +60,11 @@ peripherals:
                 gpioPin: 20
     buzzer:
         config:
-            consoleLoggingLevel: debug
+            consoleLoggingLevel: error
             gpioPin: 26
     relays:
         config:
-            consoleLoggingLevel: debug
+            consoleLoggingLevel: error
         relays:
             relayA:
                 gpioPin: 14
@@ -73,10 +72,11 @@ peripherals:
                 gpioPin: 15
     uvSensor:
         config:
-            consoleLoggingLevel: debug
+            consoleLoggingLevel: error
             logReadingsToConsole: false
             # 50, 100, 200, 400, 800 (50ms is default)
-            integrationTimeMs: 50
+            integrationTimeMs: 800
+            uvaReadErrorUpperLimit: 60000 # if a sensor reading is greater than this reading, ignore and use average sensor readings
             bus:
                 number: 1
                 address: 0x10
