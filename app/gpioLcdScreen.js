@@ -57,7 +57,11 @@ var gpioLcdScreen = {
 			update: function(text){
 				gpioLcdScreen._logger.silly('gpioLcdScreen.lines.top.update()');
 				return new Promise((resolve, reject) => {
-					gpioLcdScreen._lcd.cursor(0, 0).print(gpioLcdScreen._trimText(text));
+					try{
+						gpioLcdScreen._lcd.cursor(0, 0).print(gpioLcdScreen._trimText(text));
+					}catch(e){
+						gpioLcdScreen._logger.warn('top line print error|' + e);
+					}
 					resolve();
 				});
 			}
@@ -66,7 +70,11 @@ var gpioLcdScreen = {
 			update: function(text){
 				gpioLcdScreen._logger.silly('gpioLcdScreen.lines.bottom.update()');
 				return new Promise((resolve, reject) => {
-					gpioLcdScreen._lcd.cursor(1, 0).print(gpioLcdScreen._trimText(text));
+					try{
+						gpioLcdScreen._lcd.cursor(1, 0).print(gpioLcdScreen._trimText(text));
+					}catch(e){
+						gpioLcdScreen._logger.warn('top line print error|' + e);
+					}
 					resolve();
 				});
 			}

@@ -169,16 +169,10 @@ var gpioUvSensor = {
 			uva: {
 				read: 0,
 				accumulated: 0,
+				readAverage: 0,
+				readPerMin: 0,
+				readCount: 0,
 			},
-			uvb: {
-				read: 0,
-				accumulated: 0,
-			},
-			uvIndex: {
-				index: 0,
-				level: 0,
-				text: '',
-			}
 		},
 		_tick: {
 			intervalMs: null,
@@ -195,42 +189,49 @@ var gpioUvSensor = {
 				gpioUvSensor.exposure._data.elapsedMin = 0;
 				gpioUvSensor.exposure._data.uva.read = 0;
 				gpioUvSensor.exposure._data.uva.accumulated = 0;
-				gpioUvSensor.exposure._data.uvb.read = 0;
-				gpioUvSensor.exposure._data.uvb.accumulated = 0;
+				gpioUvSensor.exposure._data.uva.readAverage = 0;
+				gpioUvSensor.exposure._data.uva.readPerMin = 0;
+				gpioUvSensor.exposure._data.uva.readCount = 0;
 			},
 			update: function(){
 				gpioUvSensor._logger.silly('gpioUvSensor.exposure._tick.update()');
 				data = gpioUvSensor.get();
-				// uv index
-				gpioUvSensor.exposure._data.uvIndex.index = data.uvIndex;
-				gpioUvSensor.exposure._data.uvIndex.level = data.uvIndexLevel;
-				gpioUvSensor.exposure._data.uvIndex.text = data.uvIndexText;
 				// elapsed time
 				gpioUvSensor.exposure._data.elapsedMs += gpioUvSensor.exposure._tick.intervalMs;
 				gpioUvSensor.exposure._data.elapsedSec = Math.floor(gpioUvSensor.exposure._data.elapsedMs / 1000);
 				gpioUvSensor.exposure._data.elapsedMin = Math.floor((gpioUvSensor.exposure._data.elapsedMs / 1000) / 60);
 				// uva
-				gpioUvSensor.exposure._data.uva.read = data.uva < 0 ? 0 : data.uva;
-				gpioUvSensor.exposure._data.uva.readPerMin = Math.floor((gpioUvSensor.exposure._data.uva.read / gpioUvSensor._integrationTimeMs) * 1000 * 60);
+				// check for abnormal readings
+				if(data.uva < 0){ // unlikely UV LEDs turned off, probably a missed sensor/i2c bus reading, use previous reading
+					gpioUvSensor.exposure._data.uva.read = gpioUvSensor.exposure._data.uva.readAverage;
+				}else if(data.uva > 60000){ // if a sensor reading is greater than xxxx, ignore and use average sensor readings
+					gpioUvSensor.exposure._data.uva.read = gpioUvSensor.exposure._data.uva.readAverage;
+				}else{
+					gpioUvSensor.exposure._data.uva.read = data.uva;
+				}
 				gpioUvSensor.exposure._data.uva.accumulated += gpioUvSensor.exposure._data.uva.read;
-				// uvb
-				gpioUvSensor.exposure._data.uvb.read = data.uvb < 0 ? 0 : data.uvb;
-				gpioUvSensor.exposure._data.uvb.readPerMin = Math.floor((gpioUvSensor.exposure._data.uvb.read / gpioUvSensor._integrationTimeMs) * 1000 * 60);
-				gpioUvSensor.exposure._data.uvb.accumulated += gpioUvSensor.exposure._data.uvb.read;
+				gpioUvSensor.exposure._data.uva.readAverage = gpioUvSensor.exposure._data.uva.readCount == 0 ? 0 : Math.floor(gpioUvSensor.exposure._data.uva.accumulated / gpioUvSensor.exposure._data.uva.readCount);
+				gpioUvSensor.exposure._data.uva.readPerMin = Math.floor((gpioUvSensor.exposure._data.uva.read / gpioUvSensor._integrationTimeMs) * 1000 * 60);
+				gpioUvSensor.exposure._data.uva.readCount++;
+				// log data to console
 				gpioUvSensor.exposure._logDataToConsole();
 			},
 		},
 		_logDataToConsole: function(){
 			if(!gpioUvSensor._logReadingsToConsoleFlag)
 				return;
+			data = gpioUvSensor.get();
 			console.log(
-				'elapMs'	.padStart(7),	gpioUvSensor.exposure._data.elapsedMs										.toString().padStart(7),
-				'elapSec'	.padStart(8),	gpioUvSensor.exposure._data.elapsedSec										.toString().padStart(4),
-				'elapMin'	.padStart(8),	gpioUvSensor.exposure._data.elapsedMin										.toString().padStart(2),
-				'uvaRead'	.padStart(7),	(!gpioUvSensor._sensorReadings.uva ? 0 : gpioUvSensor._sensorReadings.uva)	.toString().padStart(7), // raw reading
-				'uvaReadAd'	.padStart(10),	gpioUvSensor.exposure._data.uva.read										.toString().padStart(6), // adjusted
-				'uvaPerMin'	.padStart(10),	gpioUvSensor.exposure._data.uva.readPerMin									.toString().padStart(8),
-				'uvaAcum'	.padStart(9),	gpioUvSensor.exposure._data.uva.accumulated									.toString().padStart(8),
+				'elapMs'		.padStart(7),	gpioUvSensor.exposure._data.elapsedMs										.toString().padStart(7),
+				// 'elapSec'		.padStart(8),	gpioUvSensor.exposure._data.elapsedSec										.toString().padStart(4),
+				// 'elapMin'		.padStart(8),	gpioUvSensor.exposure._data.elapsedMin										.toString().padStart(2),
+				'uvaRaw'		.padStart(7),	(!gpioUvSensor._sensorReadings.uva ? 0 : gpioUvSensor._sensorReadings.uva)	.toString().padStart(7), // raw reading
+				'uva'			.padStart(10),	data.uva																	.toString().padStart(7), // adjusted
+				'uvaRead'		.padStart(10),	gpioUvSensor.exposure._data.uva.read										.toString().padStart(6), // normalized
+				'uvaReadAv'		.padStart(10),	gpioUvSensor.exposure._data.uva.readAverage									.toString().padStart(6),
+				'uvaPerMin'		.padStart(10),	gpioUvSensor.exposure._data.uva.readPerMin									.toString().padStart(8),
+				'uvaAcum'		.padStart(9),	gpioUvSensor.exposure._data.uva.accumulated									.toString().padStart(8),
+				'uvaCnt'		.padStart(9),	gpioUvSensor.exposure._data.uva.readCount									.toString().padStart(8),
 			);
 		},
 		reset: function(){
