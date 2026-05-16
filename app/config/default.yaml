@@ -11,7 +11,7 @@ logger:
     fileLogging: true
     fileLoggingLevel: error
     consoleLogging: true
-    consoleLoggingLevel: debug # global and app logging level
+    consoleLoggingLevel: warn # global and app logging level
 cache:
     id: cache.json
 tasks:
@@ -21,18 +21,15 @@ tasks:
             max: 10000000
             min: 1000
     exposure:
-        lcdInterval: 1000 # milliseconds
+        lcdInterval: 50 # milliseconds
         buzzIncrement: 50000 # uv accumulated per min
-        preExposureUVReadings: 1 # counts
+        preExposureUVReadings: 15 # counts
         maxMissingUVReadings: 10 # counts, every uvSensor.config.integrationTimeMs (about 500ms for 10 counts) will log error if xx UV readings are missed
 peripherals:
     lcdScreen:
         config:
             consoleLoggingLevel: error
             lcdType: LCM1602
-    # giopReset:
-        # config:
-            # consoleLoggingLevel: error
     buttons:
         config:
             consoleLoggingLevel: error
@@ -75,8 +72,7 @@ peripherals:
             consoleLoggingLevel: error
             logReadingsToConsole: false
             # 50, 100, 200, 400, 800 (50ms is default)
-            integrationTimeMs: 800
-            uvaReadErrorUpperLimit: 60000 # if a sensor reading is greater than this reading, ignore and use average sensor readings
+            integrationTimeMs: 50
             bus:
                 number: 1
                 address: 0x10

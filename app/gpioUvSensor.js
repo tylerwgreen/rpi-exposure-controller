@@ -9,7 +9,6 @@ var gpioUvSensor = {
 	_busAddress: null,
 	_integrationTimeMs: null,
 	_logReadingsToConsoleFlag: null,
-	_uvaReadErrorUpperLimit: null,
 	_sensorReadings: {
 		uva: null,
 		uvb: null,
@@ -22,7 +21,6 @@ var gpioUvSensor = {
 		gpioUvSensor._busAddress = config.bus.address;
 		gpioUvSensor._integrationTimeMs = config.integrationTimeMs;
 		gpioUvSensor._logReadingsToConsoleFlag = config.logReadingsToConsole;
-		gpioUvSensor._uvaReadErrorUpperLimit = config.uvaReadErrorUpperLimit;
 		gpioUvSensor._logger = logger.getLogger('gpioUvSensor', config.consoleLoggingLevel);
 		gpioUvSensor._logger.debug('gpioUvSensor.init()');
 		gpioUvSensor._logger.verbose('initializing gpioUvSensor');
@@ -204,11 +202,9 @@ var gpioUvSensor = {
 				gpioUvSensor.exposure._data.elapsedMin = Math.floor((gpioUvSensor.exposure._data.elapsedMs / 1000) / 60);
 				// uva
 				// check for abnormal readings
-				if(data.uva < 0){
-					// unlikely UV LEDs turned off, probably a missed sensor/i2c bus reading, use previous reading
+				if(data.uva < 0){ // unlikely UV LEDs turned off, probably a missed sensor/i2c bus reading, use previous reading
 					gpioUvSensor.exposure._data.uva.read = gpioUvSensor.exposure._data.uva.readAverage;
-				}else if(data.uva > gpioUvSensor._uvaReadErrorUpperLimit){
-					// ensure reading is not 
+				}else if(data.uva > 60000){ // if a sensor reading is greater than xxxx, ignore and use average sensor readings
 					gpioUvSensor.exposure._data.uva.read = gpioUvSensor.exposure._data.uva.readAverage;
 				}else{
 					gpioUvSensor.exposure._data.uva.read = data.uva;
