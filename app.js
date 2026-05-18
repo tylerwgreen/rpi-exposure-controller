@@ -16,6 +16,15 @@ var app = {
 		app.logger = app._logger.getLogger('app', app.config.get('logger.consoleLoggingLevel')); // set log level for the app
 		// initialize app
 		app.logger.debug('app.init()');
+		// Prevent low-level I2C hardware drops from killing the app
+		process.on('uncaughtException', (e) => {
+			if(e.code && e.code === 'EREMOTEIO'){
+				app.logger.warn('Prevented crash: Likely lost contact with i2c device. Re-syncing... Hopefully...');
+			}else{
+				app.logger.error('Critical System Error|' + e);
+				process.exit(1); 
+			}
+		});
 		app.logger.verbose('initializing application');
 		// new Promise((resolve, reject) => {resolve();})
 		app.cache.init()
