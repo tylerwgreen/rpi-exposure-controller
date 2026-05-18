@@ -28,8 +28,12 @@ tasks:
 peripherals:
     lcdScreen:
         config:
-            consoleLoggingLevel: error
+            consoleLoggingLevel: debug
+            boardDebug: true
             lcdType: LCM1602
+            bus:
+                number: 1
+                address: 0x27
     buttons:
         config:
             consoleLoggingLevel: error
